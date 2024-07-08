@@ -1,0 +1,59 @@
+
+4. Vairations of GP:
+	- kernel: depends on characterization of lightcurves
+	- maximum likelihood optimization
+	- no. of data points to predict on - every 2 days
+5. ML?
+
+------------------------------------------------
+1. nan 
+4. warnings for infinite z. Can I just check for denominator ==0?
+
+1. Increase decrease levels?
+2. Slow increases? Need them
+3. Continuous increase?
+
+-------------------------------------------------------
+
+Paper 1:
+4. 3 params manipulation
+6. look up MAD normalization
+7. Reread paper
+8. lookup confusions markes on overleaf
+
+Paper 2. TBD
+1. Location of nearest object in PS1? Also vs. Location in ZTF ref?
+2. Negative subtractions?
+3. Star galaxy score? Atleast its interpretation?
+4. Magnitude of nearest obj in ZTF ref and its relation with sgscore?
+5. 
+
+--------------------------------------------------
+
+Choices made:
+    individual predictions for each band
+
+Can be added:
+    Insp. from paper 1:
+        Thiel sen estimation
+        Candidate flares using Thiel sen
+        Characterization of candidate flares: median/peak amplitude over meadian level, tspan, npts
+        MAD of the flare amplitudes (peak amplitude OR median amplitude) (?)
+        normalization with MAD (?)
+        Weibull fit 
+        At least 300 days, peak at least 1 mag above thiel sen, min 30 npts
+
+    Insp. from paper 2:
+        m_peak in both bands OR m_peak-baseline
+        at least 5 nights of postpeak multi band photometry (?)
+        post peak g-r color change rate (?)
+        post peak g-r color mean (?)
+        e-fold times for rise and decline
+    
+    My:
+        Combine filters to increase confidence
+        Include errors in calcraw
+        Flare specific calcraw
+
+
+
