@@ -26,7 +26,13 @@ Paper 2. TBD
 2. Negative subtractions?
 3. Star galaxy score? Atleast its interpretation?
 4. Magnitude of nearest obj in ZTF ref and its relation with sgscore?
-5. 
+5. Self gravitation
+6. TDE Rate det. using obs and theory,  TDE LF, TDE MF, Loss Cone, blah 
+7. Watch video
+8. Read answers
+9. Flux limited samples
+10. g-r mean, m_g - m_r < 1, rate
+11. point spread function
 
 --------------------------------------------------
 
@@ -55,5 +61,10 @@ Can be added:
         Include errors in calcraw
         Flare specific calcraw
 
-
-
+TODOs:
+    Add the params to the coding
+    Watch TDE video
+    Read answers
+    Paper doubts
+    Organize Git repo
+    Pickle
