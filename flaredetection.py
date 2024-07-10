@@ -104,6 +104,6 @@ for id in tqdm(ids):
             LC=lightcurve(timeseries, data , dataerr, id)
             #LC.regress()
             # #LC.plot()
-            # #LC.findflare()
+            LC.findflare()
             LC.plot(show=True)
                 

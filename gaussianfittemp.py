@@ -19,17 +19,19 @@ class lightcurve:
         self.mean_prediction=dict()
         self.std_prediction=dict()
         self.thiel_sen_prediction=dict()
+        self.flares=dict()
 
         for filter in self.filters:
             self.time_prediction[filter]=np.linspace( min(self.timeseries[filter]), max(self.timeseries[filter]), int((max(self.timeseries[filter])-min(self.timeseries[filter]))/2)).reshape(-1,1) if len(self.timeseries[filter])!=0 else np.array([])
             self.mean_prediction[filter]=np.array([])
             self.std_prediction[filter]=np.array([])
             self.thiel_sen_prediction[filter]=np.array([])
+            self.flares[filter]=np.array([])
 
         self.regress()
-        self.find_thiel_sen()
+        #self.find_thiel_sen()
 
-        self.flare=[]
+        #self.flare=[]
 
         self.id =id
         self.regressed=False
@@ -52,12 +54,13 @@ class lightcurve:
                     label=r"95% confidence interval",
                 )
             
-            plt.plot(self.time_prediction[filter], self.thiel_sen_prediction[filter], label="Thiel Sen Line "+filter)
+            #plt.plot(self.time_prediction[filter], self.thiel_sen_prediction[filter], label="Thiel Sen Line "+filter)
             
 
 
-        for i in range(len(self.flare)):
-            plt.axvspan(self.flare[i][0], self.flare[i][1], alpha=0.5, color='r')
+        for filter in self.filters:
+            for i in range(len(self.flares[filter])):
+                plt.axvspan(self.flares[filter][i][0],self.flares[filter][i][1], alpha=0.5, color='r')
 
         plt.legend()
         plt.xlabel('MJD')
@@ -91,8 +94,9 @@ class lightcurve:
             thiel_sen.fit(self.timeseries[filter].reshape(-1,1), self.data[filter])
             self.thiel_sen_prediction[filter]=thiel_sen.predict(self.time_prediction[filter])
 
-    def calcraw(self, flux_diff):
+    def calcraw(self, flux_diff, err):
         raw=0
+        flux_diff=flux_diff/err**2
         if flux_diff>.3:
             raw=1
         elif flux_diff>.1:
@@ -109,38 +113,40 @@ class lightcurve:
         return raw
 
     def findflare(self):
-        if len(self.mean_prediction)==0:
-            return
-        flare_began=False
-        flare_end=False
-        flare=[]
-        #dt=2
-        T=20
-        level=0
-        raws=[]
-        levels=[]
-        times=[]
-        for (i,t) in enumerate(self.time_prediction.ravel()):
-            if i==0: continue
-            dt=self.time_prediction.ravel()[i]-self.time_prediction.ravel()[i-1]
-            raw=self.calcraw(self.mean_prediction[i]-self.mean_prediction[i-1])
-            raws.append(raw)
-            level=level+dt*(raw-level)/T
-            levels.append(level)
-            times.append(t)
-            if level>0.8 and not flare_began:
-                flare_began=True
-                flare_temp=t
-            elif level<-0.8 and flare_began:
-                flare_began=False
-                timing=(flare_temp, t)
-                flare.append(timing)
+
+        for filter in self.filters:
+            if len(self.mean_prediction[filter])==0:
+                return
+            flare_began=False
+            flare_end=False
+            flare=[]
+            #dt=2
+            T=20
+            level=0
+            raws=[]
+            levels=[]
+            times=[]
+            for (i,t) in enumerate(self.time_prediction[filter].ravel()):
+                if i==0: continue
+                dt=self.time_prediction[filter].ravel()[i]-self.time_prediction[filter].ravel()[i-1]
+                raw=self.calcraw(self.mean_prediction[filter][i]-self.mean_prediction[filter][i-1], self.std_prediction[filter][i])
+                raws.append(raw)
+                level=level+dt*(raw-level)/T
+                levels.append(level)
+                times.append(t)
+                if level>0.8 and not flare_began:
+                    flare_began=True
+                    flare_temp=t
+                elif level<-0.8 and flare_began:
+                    flare_began=False
+                    timing=(flare_temp, t)
+                    flare.append(timing)
+            
+            if flare:
+                self.flares[filter]=flare
         
-        if flare:
-            self.flare=flare
-        
-        plt.plot(times, raws, label='raw')
-        plt.plot(times, levels, label='level')
-        plt.legend()
-        #plt.show()
-        plt.close()
+        # plt.plot(times, raws, label='raw')
+        # plt.plot(times, levels, label='level')
+        # plt.legend()
+        # #plt.show()
+        # plt.close()
