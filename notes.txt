@@ -64,7 +64,13 @@ Can be added:
 TODOs:
     Add the params to the coding
     Watch TDE video
-    Read answers
+
+    Read answers - questions remain 
     Paper doubts
+
     Organize Git repo
     Pickle
+    Latex - paper summaryss
+    Remove outliers
+
+    Make LCs sorted

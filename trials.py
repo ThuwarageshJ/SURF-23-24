@@ -11,13 +11,13 @@ from gaussianfit import lightcurve
 
 cols = 'jd,mag,magerr,filt,field'
 dtypes = 'int,float,float,str,int'
-ids = np.unique([f.split('\\')[-1].split('_')[0] for f in glob.glob('C:/Users/thuwa/Coding/SURF/forced_lc/*.dat')])
+ids = np.unique([f.split('\\')[-1].split('_')[0] for f in glob.glob('C:/Users/thuwa/Coding/SURF/SURF-23-24/forced_lc/*.dat')])
 i=0
 #ids=['103661510464503659']
-for id in tqdm(ids[2:]):
+for id in tqdm(ids):
     #print(id)
     lc = None
-    for f in glob.glob(f'C:/Users/thuwa/Coding/SURF/forced_lc/{id}*.dat'):
+    for f in glob.glob(f'C:/Users/thuwa/Coding/SURF/SURF-23-24/forced_lc/{id}*.dat'):
         filt = f.split('_')[-1].split('.')[0]
         field = f.split('_')[-2]
         if lc is None:
@@ -45,6 +45,8 @@ for id in tqdm(ids[2:]):
                     zp = np.nansum((flux/fluxerr**2)[mjd<58500])/np.nansum((1/fluxerr**2)[mjd<58500]) 
                     if not np.isfinite(zp):
                         zp = 0
+                    print(f, field)
+                    print(flux, fluxerr)
                     #######################################
                     # LC=lightcurve(np.array(mjd), np.array(flux-zp), f, np.array(fluxerr))
                     # LC.regress()
@@ -52,13 +54,13 @@ for id in tqdm(ids[2:]):
                     # LC.findflare()
                     # LC.plot()
                     #######################################
-                    plt.errorbar(mjd, flux-zp, yerr=fluxerr, fmt='o', c=dict(zg="royalblue", zr="crimson")[f])
-                    ################################
-                plt.errorbar(np.nan, np.nan, yerr=0.1, fmt='o', c=dict(zg="royalblue", zr="crimson")[f], label=f)
+            #         plt.errorbar(mjd, flux-zp, yerr=fluxerr, fmt='o', c=dict(zg="royalblue", zr="crimson")[f])
+            #         ################################
+            #     plt.errorbar(np.nan, np.nan, yerr=0.1, fmt='o', c=dict(zg="royalblue", zr="crimson")[f], label=f)
                 
-            plt.legend()
-            plt.xlabel('MJD')
-            plt.ylabel('Flux [uJy]')
-            plt.savefig(f'C:/Users/thuwa/Coding/SURF/raw.png')
-            #plt.show()
-            plt.close()
+            # plt.legend()
+            # plt.xlabel('MJD')
+            # plt.ylabel('Flux [uJy]')
+            # plt.savefig(f'C:/Users/thuwa/Coding/SURF/raw.png')
+            # #plt.show()
+            # plt.close()
