@@ -29,7 +29,7 @@ class lightcurve:
             self.flares[filter]=np.array([])
 
         self.regress()
-        #self.find_thiel_sen()
+        self.find_thiel_sen()
 
         #self.flare=[]
 
@@ -54,7 +54,7 @@ class lightcurve:
                     label=r"95% confidence interval",
                 )
             
-            #plt.plot(self.time_prediction[filter], self.thiel_sen_prediction[filter], label="Thiel Sen Line "+filter)
+            plt.plot(self.time_prediction[filter], self.thiel_sen_prediction[filter], label="Thiel Sen Line "+filter)
             
 
 
@@ -63,6 +63,7 @@ class lightcurve:
                 plt.axvspan(self.flares[filter][i][0],self.flares[filter][i][1], alpha=0.5, color='r')
 
         plt.legend()
+        plt.grid()
         plt.xlabel('MJD')
         plt.ylabel('Flux [uJy]')
         if save:
@@ -94,9 +95,11 @@ class lightcurve:
             thiel_sen.fit(self.timeseries[filter].reshape(-1,1), self.data[filter])
             self.thiel_sen_prediction[filter]=thiel_sen.predict(self.time_prediction[filter])
 
+            print(thiel_sen.coef_, thiel_sen.intercept_)
+
     def calcraw(self, flux_diff, err):
         raw=0
-        flux_diff=flux_diff/err**2
+        flux_diff=flux_diff/err
         if flux_diff>.3:
             raw=1
         elif flux_diff>.1:

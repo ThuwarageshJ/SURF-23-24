@@ -40,7 +40,9 @@ Choices made:
     individual predictions for each band
 
 Can be added:
-    Insp. from paper 1:
+
+half peak to peak
+    From paper 1:
         Thiel sen estimation
         Candidate flares using Thiel sen
         Characterization of candidate flares: median/peak amplitude over meadian level, tspan, npts
@@ -49,28 +51,29 @@ Can be added:
         Weibull fit 
         At least 300 days, peak at least 1 mag above thiel sen, min 30 npts
 
-    Insp. from paper 2:
+    From paper 2:
         m_peak in both bands OR m_peak-baseline
         at least 5 nights of postpeak multi band photometry (?)
         post peak g-r color change rate (?)
-        post peak g-r color mean (?)
+        post peak g-r color mean (?) - day of peak, include errors
         e-fold times for rise and decline
     
-    My:
+    Misc:
         Combine filters to increase confidence
         Include errors in calcraw
         Flare specific calcraw
 
 TODOs:
-    Add the params to the coding
-    Watch TDE video
+    Add the params to the code
+    Error propogation for g-r and calcraw
 
-    Read answers - questions remain 
+    Play around detector T, and fluxdiffs
+
+    Read answers 
     Paper doubts
 
     Organize Git repo
     Pickle
-    Latex - paper summaryss
-    Remove outliers
+    Latex - paper summaries
 
-    Make LCs sorted
+    Remove outliers
