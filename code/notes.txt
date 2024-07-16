@@ -80,10 +80,10 @@ TODOs:
 
 TODAY
 1. Finish up code
-    - UI for tuning flare finder: mode
-    - flux peaks for each flare
-    - half peak to peak
-    - peak to half peak
+    - UI for tuning flare finder: mode: DONE 
+    - flux peaks for each flare: make variables
+    - half peak to peak: DONE: plot?
+    - peak to half peak: DONE: plot?
     - g-r mean at peak
     - g-r rate of change
 

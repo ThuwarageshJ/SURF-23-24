@@ -40,6 +40,8 @@ class LightCurve:
         self.flares_t=dict()
         self.flares_loc=dict()
 
+        self.peaks=dict()
+
         self.half_to_peak=dict()
         self.peak_to_half=dict()
 
@@ -64,6 +66,7 @@ class LightCurve:
             self.flares_loc[filter]=np.array([])
             self.half_to_peak[filter]=np.array([])
             self.peak_to_half[filter]=np.array([])
+            self.peaks[filter]=np.array([])
             self.thiel_sen_parameters[filter]=None
             self.gp_parameters[filter]=None
 
@@ -244,12 +247,14 @@ class LightCurve:
 
             half_to_peak=[]
             peak_to_half=[]
+            peaks=[]
 
             for loc in self.flares_loc[filter]:
 
                 peak_idx = np.argmax(self.mean_prediction[filter][loc[0]:loc[1]+1])+loc[0]
 
                 peak_flux = self.mean_prediction[filter][peak_idx]
+                peaks.append(peak_flux)
                 peak_t = self.time_prediction[filter][peak_idx]
 
                 for i in range(peak_idx, -1, -1):
@@ -266,3 +271,4 @@ class LightCurve:
                         
             self.half_to_peak[filter]=half_to_peak
             self.peak_to_half[filter]=peak_to_half
+            self.peaks[filter]=peaks
