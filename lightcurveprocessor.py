@@ -6,7 +6,7 @@ from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import Matern
 from sklearn.linear_model import TheilSenRegressor
 
-class lightcurve:
+class LightCurve:
 
     def __init__(self, timeseries: dict, data: dict , dataerr: dict, id: str)-> None:
 
@@ -266,13 +266,3 @@ class lightcurve:
                         
             self.half_to_peak[filter]=half_to_peak
             self.peak_to_half[filter]=peak_to_half
-        
-
-
-
-
-
-            
-
-            
-        

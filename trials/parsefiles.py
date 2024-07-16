@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import sys, os, glob
 from astropy.table import Table
 from tqdm import *
-from gaussianfit import lightcurve
+from lightcurveprocessor import lightcurve
 
 cols = 'jd,mag,magerr,filt,field'
 dtypes = 'int,float,float,str,int'

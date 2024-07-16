@@ -8,7 +8,7 @@ import sys, os, glob
 from astropy.table import Table
 from astropy.io import ascii
 from tqdm import *
-from gaussianfit import lightcurve
+from lightcurveprocessor import LightCurve
 from constants import *
 
 # Columns and corresponding datatypes for lightcurves.
@@ -100,7 +100,7 @@ for id in tqdm(ids):
                 data[f]=np.array(lc['adjflux'][mask])
                 dataerr[f]=np.array(lc['fluxerr'][mask])
             
-            LC=lightcurve(timeseries, data , dataerr, id)
+            LC=LightCurve(timeseries, data , dataerr, id)
             LC.find_flare(user=True)
             #LC.plot(show=True)
                 
