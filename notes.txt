@@ -77,3 +77,16 @@ TODOs:
     Latex - paper summaries
 
     Remove outliers
+
+TODAY
+1. Finish up code
+    - UI for tuning flare finder: mode
+    - flux peaks for each flare
+    - half peak to peak
+    - peak to half peak
+    - g-r mean at peak
+    - g-r rate of change
+
+2. Statistics
+    - more reading about exponential filters
+    

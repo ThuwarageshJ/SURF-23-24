@@ -8,28 +8,32 @@ import sys, os, glob
 from astropy.table import Table
 from astropy.io import ascii
 from tqdm import *
-from gaussianfittemp import lightcurve
+from gaussianfit import lightcurve
+from constants import *
 
 # Columns and corresponding datatypes for lightcurves.
 cols = 'jd,mag,magerr,filt,field,flux,fluxerr,adjflux'
 dtypes = 'int,float,float,str,int,float,float,float'
 
 # Unique IDs of data
-ids = np.unique([f.split('\\')[-1].split('_')[0] for f in glob.glob('C:/Users/thuwa/Coding/SURF/SURF-23-24/forced_lc/*.dat')])
+ids = np.unique([f.split('\\')[-1].split('_')[0] for f in glob.glob(f'{folder_path}/forced_lc/*.dat')])
+#ids=['107251981262842082']
 
-for id in tqdm(ids):
+#trials=np.random.randint(0, 3910, size=100)
+
+for id in tqdm(ids[3:]):
 
     lc = None
 
-    if glob.glob(f'C:/Users/thuwa/Coding/SURF/SURF-23-24/forced_lc_by_id_1/{id}.dat'): 
+    if glob.glob(f'{folder_path}/forced_lc_by_id_1/{id}.dat'): 
 
         # Use the processed light curve file, if it already exists
-        lc = Table.read(f'C:/Users/thuwa/Coding/SURF/SURF-23-24/forced_lc_by_id_1/{id}.dat', format='ascii')
+        lc = Table.read(f'{folder_path}/forced_lc_by_id_1/{id}.dat', format='ascii')
 
     else:
 
         # Create lightcurve table with data from all files of the current ID
-        for f in glob.glob(f'C:/Users/thuwa/Coding/SURF/SURF-23-24/forced_lc/{id}*.dat'):
+        for f in glob.glob(f'{folder_path}/forced_lc/{id}*.dat'):
 
             filt = f.split('_')[-1].split('.')[0]       # ZTF band
             field = f.split('_')[-2]                    # field
@@ -56,7 +60,7 @@ for id in tqdm(ids):
 
                         lc.add_row([jd, mag, magerr, filt, field, flux, fluxerr, 0.0])  # add row
 
-                        if (jd-2400000.5)<58500:                        # add to zero point calculation if mjd<58500
+                        if (jd-mjd_adjustment)<mjd_zp:                        # add to zero point calculation if mjd<58500
                             weighted_sum+=(flux/fluxerr**2)
                             weight+=(1/fluxerr**2)
                 
@@ -78,7 +82,7 @@ for id in tqdm(ids):
 
         # Save the processed light curve data
         if lc!=None:
-            ascii.write(lc, f'C:/Users/thuwa/Coding/SURF/SURF-23-24/forced_lc_by_id_1/{id}.dat', overwrite=True)
+            ascii.write(lc, f'{folder_path}/forced_lc_by_id_1/{id}.dat', overwrite=True)
     
     if lc!=None:
 
@@ -92,18 +96,11 @@ for id in tqdm(ids):
 
                 mask = (lc['filt']==f)
 
-                timeseries[f]=np.array(lc['jd'][mask]-2400000.5)
+                timeseries[f]=np.array(lc['jd'][mask]-mjd_adjustment)
                 data[f]=np.array(lc['adjflux'][mask])
                 dataerr[f]=np.array(lc['fluxerr'][mask])
             
-            # print(timeseries)
-            # print(data)
-            # print(dataerr)
-    
-
             LC=lightcurve(timeseries, data , dataerr, id)
-            #LC.regress()
-            # #LC.plot()
             LC.findflare()
-            LC.plot(show=True)
+            #LC.plot(show=True)
                 
