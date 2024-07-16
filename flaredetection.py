@@ -17,11 +17,11 @@ dtypes = 'int,float,float,str,int,float,float,float'
 
 # Unique IDs of data
 ids = np.unique([f.split('\\')[-1].split('_')[0] for f in glob.glob(f'{folder_path}/forced_lc/*.dat')])
-#ids=['107251981262842082']
+ids=['108602273971326964','108592173310873531','82973163747267487', '94300438321684163']
 
-#trials=np.random.randint(0, 3910, size=100)
+# trials=np.random.randint(0, 100, size=100)
 
-for id in tqdm(ids[3:]):
+for id in tqdm(ids):
 
     lc = None
 
@@ -101,6 +101,6 @@ for id in tqdm(ids[3:]):
                 dataerr[f]=np.array(lc['fluxerr'][mask])
             
             LC=lightcurve(timeseries, data , dataerr, id)
-            LC.findflare()
+            LC.find_flare(user=True)
             #LC.plot(show=True)
                 
