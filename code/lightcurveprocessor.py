@@ -41,6 +41,8 @@ class LightCurve:
         self.flares_loc=dict()
 
         self.peaks=dict()
+        self.g_r_color_at_peak=dict()
+        self.g_r_color_change_rates=dict()
 
         self.half_to_peak=dict()
         self.peak_to_half=dict()
@@ -67,6 +69,8 @@ class LightCurve:
             self.half_to_peak[filter]=np.array([])
             self.peak_to_half[filter]=np.array([])
             self.peaks[filter]=np.array([])
+            self.g_r_color_at_peak[filter]=np.array([])
+            self.g_r_color_change_rates[filter]=np.array([])
             self.thiel_sen_parameters[filter]=None
             self.gp_parameters[filter]=None
 
@@ -248,27 +252,54 @@ class LightCurve:
             half_to_peak=[]
             peak_to_half=[]
             peaks=[]
+            g_r_color=[]
+            g_r_color_changes=[]
 
             for loc in self.flares_loc[filter]:
 
                 peak_idx = np.argmax(self.mean_prediction[filter][loc[0]:loc[1]+1])+loc[0]
 
-                peak_flux = self.mean_prediction[filter][peak_idx]
+                peak_flux=(self.mean_prediction['zg'][peak_idx], self.mean_prediction['zr'][peak_idx])
+                g_r=-2.5*np.log10(peak_flux[0]/peak_flux[1])
+
+                g_r_changes=[]
+
+                for i in range(peak_idx+1, peak_idx+6):
+                    g_r_changes.append((-2.5*(np.log10(self.mean_prediction['zg'][i]*self.mean_prediction['zr'][i-1]/(self.mean_prediction['zr'][i]*self.mean_prediction['zg'][i-1]))))/(self.time_prediction['zg'][i]-self.time_prediction['zg'][i-1]))
+
+                g_r_color_changes.append(tuple(g_r_changes))
+                g_r_color.append(g_r)
                 peaks.append(peak_flux)
+
                 peak_t = self.time_prediction[filter][peak_idx]
 
+                j=0 if filter=='zg' else 1
+
                 for i in range(peak_idx, -1, -1):
-                    if self.mean_prediction[filter][i]<peak_flux/2:
+                    if self.mean_prediction[filter][i]<peak_flux[j]/2:
                         half_peak_t = (self.time_prediction[filter][i]+self.time_prediction[filter][i+1])/2
                         half_to_peak.append(peak_t - half_peak_t)
                         break
+                    if i==0:
+                        half_to_peak.append(None)
                 
                 for i in range(peak_idx, len(self.time_prediction[filter])):
-                    if self.mean_prediction[filter][i]<peak_flux/2:
+                    if self.mean_prediction[filter][i]<peak_flux[j]/2:
                         half_peak_t = (self.time_prediction[filter][i]+self.time_prediction[filter][i-1])/2
                         peak_to_half.append(half_peak_t - peak_t)
                         break
+                    if i==len(self.time_prediction[filter]-1):
+                        peak_to_half.append(None)
                         
             self.half_to_peak[filter]=half_to_peak
             self.peak_to_half[filter]=peak_to_half
             self.peaks[filter]=peaks
+            self.g_r_color_at_peak[filter]=g_r_color
+            self.g_r_color_change_rates[filter]=g_r_color_changes
+
+            print(filter)
+            print(' Half peak to peak times: ', self.half_to_peak[filter], ' days')
+            print(' Peak to half peak times: ', self.peak_to_half[filter], 'days')
+            print(' Peak fluxes: (ZG, ZR): ', self.peaks[filter], ' uJy')
+            print(' g-r colors at peak: ', self.g_r_color_at_peak[filter], ' mag')
+            print(' g-r color change rates for 5 days after peak: ', self.g_r_color_change_rates[filter], ' mag day-1')

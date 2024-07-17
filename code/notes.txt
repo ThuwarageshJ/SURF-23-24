@@ -82,7 +82,7 @@ TODAY
 1. Finish up code
     - UI for tuning flare finder: mode: DONE 
     - flux peaks for each flare: make variables
-    - half peak to peak: DONE: plot?
+    - half peak to peak: DONE: plot? - Exception handling range
     - peak to half peak: DONE: plot?
     - g-r mean at peak
     - g-r rate of change
@@ -90,3 +90,4 @@ TODAY
 2. Statistics
     - more reading about exponential filters
     
+Forced_lc_figs complete
