@@ -19,7 +19,7 @@ class LightCurve:
         self.data=data
         self.dataerr=dataerr
 
-        self.filters=['zg','zr']
+        self.filters=list(self.data.keys())
 
         self.N=[]
 
@@ -299,11 +299,12 @@ class LightCurve:
             self.g_r_color_at_peak[filter]=g_r_color
             self.g_r_color_change_rates[filter]=g_r_color_changes
 
-            print(filter)
-            print(' Half peak to peak times: ', self.half_to_peak[filter], ' days')
-            print(' Peak to half peak times: ', self.peak_to_half[filter], 'days')
-            print(' Peak fluxes: (ZG, ZR): ', self.peaks[filter], ' uJy')
-            print(' g-r colors at peak: ', self.g_r_color_at_peak[filter], ' mag')
-            print(' g-r color change rates for 5 days after peak: ', self.g_r_color_change_rates[filter], ' mag day-1')
+            if self.flares_loc[filter]:
+                print(filter)
+                print(' Half peak to peak times: ', self.half_to_peak[filter], ' days')
+                print(' Peak to half peak times: ', self.peak_to_half[filter], 'days')
+                print(' Peak fluxes: (ZG, ZR): ', self.peaks[filter], ' uJy')
+                print(' g-r colors at peak: ', self.g_r_color_at_peak[filter], ' mag')
+                print(' g-r color change rates for 5 days after peak: ', self.g_r_color_change_rates[filter], ' mag day-1')
 
     

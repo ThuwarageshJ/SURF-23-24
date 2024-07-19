@@ -91,3 +91,9 @@ TODAY
     - more reading about exponential filters
     
 Forced_lc_figs complete
+
+
+108092227537651746
+108102035881929771
+108102156673615544
+108192065403276188

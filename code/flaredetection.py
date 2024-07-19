@@ -8,7 +8,7 @@ import sys, os, glob
 from astropy.table import Table
 from astropy.io import ascii
 from tqdm import *
-from lightcurveprocessortemp import LightCurve
+from lightcurveprocessor import LightCurve
 from constants import *
 import pickle
 
@@ -23,15 +23,15 @@ ids = np.unique([f.split('\\')[-1].split('_')[0] for f in glob.glob(f'{folder_pa
 # trials=np.random.randint(0, 100, size=100)
 
 for id in tqdm(ids):
-
+    print(id)
     if glob.glob(f'{folder_path}/pickles/{id}.pickle'):
-        print("\nRetrieving pickle.. ", id)
-        filepath=os.path.join(f'{folder_path}/pickles', id+'.pickle')
-        with open(filepath, 'rb') as file:
-            LC=pickle.load(file)
-        LC.plot(show=False, save=True, save_loc=f'{folder_path}/samples')
-        continue
-
+        # print("\nRetrieving pickle.. ", id)
+        # filepath=os.path.join(f'{folder_path}/pickles', id+'.pickle')
+        # with open(filepath, 'rb') as file:
+        #     LC=pickle.load(file)
+        # LC.plot(show=False, save=True, save_loc=f'{folder_path}/samples')
+        continue 
+    
     lc = None
 
     if glob.glob(f'{folder_path}/forced_lc_by_id_1/{id}.dat'): 
@@ -111,7 +111,7 @@ for id in tqdm(ids):
             
             LC=LightCurve(timeseries, data , dataerr, id)
             LC.find_flare(user=False)
-            LC.plot(show=True, save=False, save_loc=f'{folder_path}/samples')
+            LC.plot(show=False, save=1, save_loc=f'{folder_path}/samples')
             
 
             print("\n Saving the lightcurve object as %s..." % id)
