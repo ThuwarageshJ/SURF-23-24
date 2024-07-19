@@ -5,19 +5,21 @@ from matplotlib.widgets import Button, CheckButtons, RadioButtons
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import Matern
 from sklearn.linear_model import TheilSenRegressor
+import pickle
+import os
 
 class LightCurve:
 
     def __init__(self, timeseries: dict, data: dict , dataerr: dict, id: str)-> None:
 
         self.alpha = .3
-        self.T=20
+        self.T=10
 
         self.timeseries=timeseries
         self.data=data
         self.dataerr=dataerr
 
-        self.filters=self.data.keys()
+        self.filters=['zg','zr']
 
         self.N=[]
 
@@ -95,13 +97,13 @@ class LightCurve:
             
             if len(self.mean_prediction[filter])!=0:
                 ax.plot(self.time_prediction[filter], self.mean_prediction[filter], label="Mean prediction "+filter)
-                ax.fill_between(
-                    self.time_prediction[filter],
-                    self.mean_prediction[filter] - 1.96 * self.std_prediction[filter],
-                    self.mean_prediction[filter] + 1.96 * self.std_prediction[filter],
-                    alpha=0.5,
-                    label=r"95% confidence interval "+filter,
-                )
+            #     ax.fill_between(
+            #         self.time_prediction[filter],
+            #         self.mean_prediction[filter] - 1.96 * self.std_prediction[filter],
+            #         self.mean_prediction[filter] + 1.96 * self.std_prediction[filter],
+            #         alpha=0.5,
+            #         label=r"95% confidence interval "+filter,
+            #    )
             
             #ax.plot(self.time_prediction[filter], self.thiel_sen_prediction[filter], label="Thiel Sen Line "+filter)
             
@@ -109,7 +111,7 @@ class LightCurve:
                 plt.axvspan(self.flares_t[filter][i][0],self.flares_t[filter][i][1], alpha=0.35, color=dict(zg='b', zr='r')[filter])
 
         plt.legend()
-        plt.grid()
+        #plt.grid()
         plt.xlabel('MJD')
         plt.ylabel('Flux [uJy]')
         _=plt.title(self.id+' T='+str(self.T)+' alpha='+str(self.alpha))
@@ -194,6 +196,8 @@ class LightCurve:
 
                 self.exponential_filter()
 
+                self.plot(show=True)
+
             if reset_params:
                 self.T = original_T
                 self.alpha = original_alpha
@@ -222,7 +226,7 @@ class LightCurve:
                 if i==0: continue
 
                 dt=self.time_prediction[filter][i]-self.time_prediction[filter][i-1]
-                raw=self.calcraw(self.mean_prediction[filter][i]-self.mean_prediction[filter][i-1], self.std_prediction[filter][i])
+                raw=self.calcraw(self.mean_prediction[filter][i]-self.mean_prediction[filter][i-1], np.sqrt(self.std_prediction[filter][i]**2+self.std_prediction[filter][i-1]**2))
                 level=level+dt*(raw-level)/self.T
 
                 if level>0.8 and not flare_began:
@@ -238,11 +242,9 @@ class LightCurve:
             self.flares_t[filter]=flare_t
             self.flares_loc[filter]=flare_loc
 
-        self.find_peak_times()
-        
-        self.plot(show=True)
+        self.find_flare_parameters()
 
-    def find_peak_times(self):
+    def find_flare_parameters(self):
 
         if self.null:
             return
@@ -303,3 +305,5 @@ class LightCurve:
             print(' Peak fluxes: (ZG, ZR): ', self.peaks[filter], ' uJy')
             print(' g-r colors at peak: ', self.g_r_color_at_peak[filter], ' mag')
             print(' g-r color change rates for 5 days after peak: ', self.g_r_color_change_rates[filter], ' mag day-1')
+
+    
