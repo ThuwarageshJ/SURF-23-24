@@ -22,22 +22,23 @@ ids = np.unique([f.split('\\')[-1].split('_')[0] for f in glob.glob(f'{folder_pa
 
 # trials=np.random.randint(0, 100, size=100)
 
-for id in tqdm(ids):
+for id in tqdm(ids[1438:1460]):
     print(id)
     if glob.glob(f'{folder_path}/pickles/{id}.pickle'):
-        # print("\nRetrieving pickle.. ", id)
-        # filepath=os.path.join(f'{folder_path}/pickles', id+'.pickle')
-        # with open(filepath, 'rb') as file:
-        #     LC=pickle.load(file)
-        # LC.plot(show=False, save=True, save_loc=f'{folder_path}/samples')
+        print("\nRetrieving pickle.. ", id)
+        filepath=os.path.join(f'{folder_path}/pickles', id+'.pickle')
+        with open(filepath, 'rb') as file:
+            LC=pickle.load(file)
+        LC.find_flare()
+        LC.plot(show=False, save=True, save_loc=f'{folder_path}/samples')
         continue 
     
     lc = None
 
-    if glob.glob(f'{folder_path}/forced_lc_by_id_1/{id}.dat'): 
+    if glob.glob(f'{folder_path}/forced_lc_by_id/{id}.dat'): 
 
         # Use the processed light curve file, if it already exists
-        lc = Table.read(f'{folder_path}/forced_lc_by_id_1/{id}.dat', format='ascii')
+        lc = Table.read(f'{folder_path}/forced_lc_by_id/{id}.dat', format='ascii')
 
     else:
 
@@ -91,7 +92,7 @@ for id in tqdm(ids):
 
         # Save the processed light curve data
         if lc!=None:
-            ascii.write(lc, f'{folder_path}/forced_lc_by_id_1/{id}.dat', overwrite=True)
+            ascii.write(lc, f'{folder_path}/forced_lc_by_id/{id}.dat', overwrite=True)
     
     if lc!=None:
 
@@ -111,7 +112,7 @@ for id in tqdm(ids):
             
             LC=LightCurve(timeseries, data , dataerr, id)
             LC.find_flare(user=False)
-            LC.plot(show=False, save=1, save_loc=f'{folder_path}/samples')
+            LC.plot(show=False, save=True, plot_std = False, save_loc=f'{folder_path}/samples')
             
 
             print("\n Saving the lightcurve object as %s..." % id)

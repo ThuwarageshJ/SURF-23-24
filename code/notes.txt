@@ -4,7 +4,6 @@
 	- maximum likelihood optimization
 	- no. of data points to predict on - every 2 days
 5. ML?
-
 ------------------------------------------------
 1. nan 
 4. warnings for infinite z. Can I just check for denominator ==0?
@@ -12,7 +11,6 @@
 1. Increase decrease levels?
 2. Slow increases? Need them
 3. Continuous increase?
-
 -------------------------------------------------------
 
 Paper 1:
@@ -39,61 +37,82 @@ Paper 2. TBD
 Choices made:
     individual predictions for each band
 
-Can be added:
+Flare parameters:
 
-half peak to peak
     From paper 1:
-        Thiel sen estimation
-        Candidate flares using Thiel sen
-        Characterization of candidate flares: median/peak amplitude over meadian level, tspan, npts
-        MAD of the flare amplitudes (peak amplitude OR median amplitude) (?)
-        normalization with MAD (?)
-        Weibull fit 
-        At least 300 days, peak at least 1 mag above thiel sen, min 30 npts
+
+        ADDED TO CODE:
+            Thiel sen estimation 
+        NOT:
+            Candidate flares using Thiel sen
+            Characterization of candidate flares: median/peak amplitude over meadian level, tspan, npts
+            MAD of the flare amplitudes (peak amplitude OR median amplitude) (?)
+            normalization with MAD (?)
+            Weibull fit 
+            At least 300 days, peak at least 1 mag above thiel sen, min 30 npts
 
     From paper 2:
-        m_peak in both bands OR m_peak-baseline
-        at least 5 nights of postpeak multi band photometry (?)
-        post peak g-r color change rate (?)
-        post peak g-r color mean (?) - day of peak, include errors
-        e-fold times for rise and decline
+
+        ADDED TO CODE:
+            m_peak in both bands OR m_peak-baseline
+            post peak g-r color change rate (?)
+            post peak g-r color mean (?) - day of peak, include errors
+        NOT:
+            at least 5 nights of postpeak multi band photometry (?)
+            e-fold times for rise and decline 
     
     Misc:
-        Combine filters to increase confidence
-        Include errors in calcraw
-        Flare specific calcraw
+
+        ADDED TO CODE:
+            Half peak to peak time
+            Peak to half peak time
+        NOT:
+            GP fit params 
 
 TODOs:
-    Add the params to the code
-    Error propogation for g-r and calcraw
 
-    Play around detector T, and fluxdiffs
+    DOABLES:
 
+        Combine filters to increase confidence
+        Include errors in calcraw - DONE
+        More rigorous calcraw function
+        Flare-specific OR population-specific calcraw params
+        Make Flare class?
+    
+    TinyGP
+    Celerite
+
+    Remove increase only
+    
+    Verify color, color change, error formulas
+    Verify George
+
+    SDSS
+    SQL
+    
     Read answers 
     Paper doubts
 
-    Organize Git repo
-    Pickle
-    Latex - paper summaries
+    Latex - paper summaries in Git
 
     Remove outliers
-
-TODAY
-1. Finish up code
-    - UI for tuning flare finder: mode: DONE 
-    - flux peaks for each flare: make variables
-    - half peak to peak: DONE: plot? - Exception handling range : made None
-    - peak to half peak: DONE: plot? 
-    - g-r mean at peak: DONE
-    - g-r rate of change: DONE
-
-2. Statistics
-    - more reading about exponential filters
     
-Forced_lc_figs complete
+    Code Cleanup
+    Research on exponential filters
+
+    Test new params
+
+    Writeups
+
+
+
+
+
+
 
 
 108092227537651746
 108102035881929771
 108102156673615544
 108192065403276188
+
