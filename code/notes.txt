@@ -84,6 +84,11 @@ TODOs:
 
     Remove increase only
     
+    baselines
+    halfpeaks
+    gaussian+exp fit
+    multithreading (processes) with core batching
+
     Verify color, color change, error formulas
     Verify George
 
@@ -116,3 +121,7 @@ TODOs:
 108102156673615544
 108192065403276188
 
+
+1. SDSS query gen
+2. PANSTARRS-1
+3. Add code for Zp

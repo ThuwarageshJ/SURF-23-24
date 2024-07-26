@@ -227,7 +227,7 @@ class LightCurve:
         
         return raw
 
-    def find_flare(self, user: bool = False, show_plot: bool = True, reset_params: bool = True):
+    def find_flare(self, user: bool = False, show_plot: bool = True, reset_params: bool = True, include_monotonics: bool = False):
 
         if self.null:
             return
@@ -248,7 +248,7 @@ class LightCurve:
 
                 (self.T, self.alpha) = params[0], params[1]
 
-                self.exponential_filter()
+                self.exponential_filter(include_monotonics)
 
                 self.plot(show=show_plot)
 
@@ -258,9 +258,9 @@ class LightCurve:
             
         else:
 
-            self.exponential_filter()
+            self.exponential_filter(include_monotonics)
 
-    def exponential_filter(self):
+    def exponential_filter(self, include_monotonics: bool = False):
 
         if self.null:
             return
@@ -286,12 +286,21 @@ class LightCurve:
                 if level>0.8 and not flare_began:
                     flare_began=True
                     flare_temp=(t, i)
-                elif (level<-0.8 or i==len(self.time_prediction[filter])-1) and flare_began:    # add increasing 
-                    flare_began=False
-                    timing=(flare_temp[0], t)
-                    loc=(flare_temp[1], i)
-                    flare_t.append(timing)
-                    flare_loc.append(loc)
+                elif not include_monotonics:
+                    if level<-0.8 and flare_began:    # add increasing 
+                        flare_began=False
+                        timing=(flare_temp[0], t)
+                        loc=(flare_temp[1], i)
+                        flare_t.append(timing)
+                        flare_loc.append(loc)
+                else:
+                    if (level<-0.8 or i==len(self.mean_prediction[filter])-1) and flare_began:    # add increasing 
+                        flare_began=False
+                        timing=(flare_temp[0], t)
+                        loc=(flare_temp[1], i)
+                        flare_t.append(timing)
+                        flare_loc.append(loc)
+
             
             self.flares_t[filter]=flare_t
             self.flares_loc[filter]=flare_loc

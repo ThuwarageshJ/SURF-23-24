@@ -22,7 +22,7 @@ ids = np.unique([f.split('\\')[-1].split('_')[0] for f in glob.glob(f'{folder_pa
 
 # trials=np.random.randint(0, 100, size=100)
 
-for id in tqdm(ids[1438:1460]):
+for id in tqdm(ids):
     print(id)
     if glob.glob(f'{folder_path}/pickles/{id}.pickle'):
         print("\nRetrieving pickle.. ", id)
@@ -30,7 +30,7 @@ for id in tqdm(ids[1438:1460]):
         with open(filepath, 'rb') as file:
             LC=pickle.load(file)
         LC.find_flare()
-        LC.plot(show=False, save=True, save_loc=f'{folder_path}/samples')
+        LC.plot(show= True, save=False, save_loc=f'{folder_path}/samples')
         continue 
     
     lc = None
