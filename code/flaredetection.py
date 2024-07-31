@@ -11,39 +11,40 @@ from tqdm import *
 from lightcurveprocessor import LightCurve
 from constants import *
 import pickle
-
+import time
 # Columns and corresponding datatypes for lightcurves.
 cols = 'jd,mag,magerr,filt,field,flux,fluxerr,adjflux'
 dtypes = 'int,float,float,str,int,float,float,float'
-
+t0=time.time()
 # Unique IDs of data
-#ids = np.unique([f.split('\\')[-1].split('_')[0] for f in glob.glob(f'{folder_path}/forced_lc/*.dat')])
-ids=['108602273971326964','108592173310873531','82973163747267487', '94300438321684163']
+ids = np.unique([f.split('\\')[-1].split('_')[0] for f in glob.glob(f'{cur_folder_path}/forced_lc/*.dat')])[:100]
+#ids=['108602273971326964','108592173310873531','82973163747267487', '94300438321684163']
 
 # trials=np.random.randint(0, 100, size=100)
 
 for id in tqdm(ids):
     print(id)
-    if glob.glob(f'{folder_path}/pickles/{id}.pickle'):
-        print("\nRetrieving pickle.. ", id)
-        filepath=os.path.join(f'{folder_path}/pickles', id+'.pickle')
-        with open(filepath, 'rb') as file:
-            LC=pickle.load(file)
-        LC.find_flare()
-        LC.plot(show= True, save=False, save_loc=f'{folder_path}/samples')
-        continue 
+    # if glob.glob(f'{cur_folder_path}/pickles/{id}.pickle'):
+    #     print("\nRetrieving pickle.. ", id)
+    #     filepath=os.path.join(f'{cur_folder_path}/pickles', id+'.pickle')
+    #     with open(filepath, 'rb') as file:
+    #         LC=pickle.load(file)
+    #     LC.find_flare()
+    #     LC.plot(show= True, save=False, save_loc=f'{cur_folder_path}/samples')
+    #     continue 
     
     lc = None
 
-    if glob.glob(f'{folder_path}/forced_lc_by_id/{id}.dat'): 
+    # if glob.glob(f'{cur_folder_path}/forced_lc_by_id/{id}.dat'): 
+    if False:
 
         # Use the processed light curve file, if it already exists
-        lc = Table.read(f'{folder_path}/forced_lc_by_id/{id}.dat', format='ascii')
+        lc = Table.read(f'{cur_folder_path}/forced_lc_by_id/{id}.dat', format='ascii')
 
     else:
 
         # Create lightcurve table with data from all files of the current ID
-        for f in glob.glob(f'{folder_path}/forced_lc/{id}*.dat'):
+        for f in glob.glob(f'{cur_folder_path}/forced_lc/{id}*.dat'):
 
             filt = f.split('_')[-1].split('.')[0]       # ZTF band
             field = f.split('_')[-2]                    # field
@@ -86,13 +87,24 @@ for id in tqdm(ids):
 
             except Exception as e:
                 continue #print(e)
+
+        # #  # Sort by filter and then by jd
+        # lc.sort(['filt', 'adjflux'])
+        # # print(lc)
         
-        # Sort by filter and then by jd
+        # for filt in ['zg', 'zr']:
+        #     #print(filt)
+        #     mask = (lc['filt']==filt)
+        #     #print(lc['adjflux'][mask][:N_low])
+        #     zp_median = np.median(lc['adjflux'][mask][:N_low])
+        #     #print(zp_median)
+        #     lc['adjflux'][mask]=lc['adjflux'][mask]-zp_median
+        
         lc.sort(['filt', 'jd'])
 
         # Save the processed light curve data
         if lc!=None:
-            ascii.write(lc, f'{folder_path}/forced_lc_by_id/{id}.dat', overwrite=True)
+            ascii.write(lc, f'{cur_folder_path}/forced_lc_by_id/{id}.dat', overwrite=True)
     
     if lc!=None:
 
@@ -111,11 +123,13 @@ for id in tqdm(ids):
                 dataerr[f]=np.array(lc['fluxerr'][mask])
             
             LC=LightCurve(timeseries, data , dataerr, id)
-            LC.find_flare(user=False)
-            LC.plot(show=False, save=True, plot_std = False, save_loc=f'{folder_path}/samples')
+            LC.find_flare(user=False, print_params=print_flare_parameters)
+            LC.plot(show=0, save=1, plot_std = False, save_loc=f'{cur_folder_path}/samples')
             
 
-            print("\n Saving the lightcurve object as %s..." % id)
-            filepath=os.path.join(f'{folder_path}/pickles', id+'.pickle')
-            with open(filepath, 'wb') as file:
-                pickle.dump(LC, file)
+            # print("\n Saving the lightcurve object as %s..." % id)
+            # filepath=os.path.join(f'{cur_folder_path}/pickles', id+'.pickle')
+            # with open(filepath, 'wb') as file:
+            #     pickle.dump(LC, file)
+
+print(time.time()-t0)

@@ -125,3 +125,13 @@ TODOs:
 1. SDSS query gen
 2. PANSTARRS-1
 3. Add code for Zp
+
+
+1. More work for exp filter
+2. Backup plans
+3. Abstract and interim reports
+
+Code cleanup
+Comment out
+Customize Flaredetector
+Multi processing
