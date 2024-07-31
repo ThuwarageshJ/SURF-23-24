@@ -17,26 +17,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 
 def light_curve(id):
     
-    # Uncomment if using intermediate files
-
-    # if glob.glob(f'{cur_folder_path}/pickles/{id}.pickle'):
-    #     print("\nRetrieving pickle.. ", id)
-    #     filepath=os.path.join(f'{cur_folder_path}/pickles', id+'.pickle')
-    #     with open(filepath, 'rb') as file:
-    #         LC=pickle.load(file)
-    #     LC.find_flare()
-    #     LC.plot(show= True, save=False, save_loc=f'{cur_folder_path}/samples')
-    #     continue 
-    
     lc = None
-
-    # Uncomment if using intermediate files
-    # if glob.glob(f'{temp_path}/{id}.dat'): 
-
-    #     # Use the processed light curve file, if it already exists
-    #     lc = Table.read(f'{temp_path}/{id}.dat', format='ascii')
-
-    # else:
 
     # Create lightcurve table with data from all files of the current ID
     for f in glob.glob(f'{lc_path}/{id}*.dat'):
@@ -94,40 +75,36 @@ def light_curve(id):
     
     lc.sort(['filt', 'jd'])
 
-    # Uncomment to store intermediate files
-    # Save the processed light curve data
-    # if lc!=None:
-    #     ascii.write(lc, f'{temp_path}/{id}.dat', overwrite=True)
-
     return lc
 
-def process_light_curve(lc, adjust_parameters, reset_params, show, save, plot_std, fig_path, pickle_path):
+def process_light_curve(id, lc, adjust_parameters, reset_params, show, save, plot_std, fig_path, pickle_path):
 
-    if lc!=None:
+    if lc is None:
+        return
+    
+    if len(lc)>0:
 
-        if len(lc)>0:
+        timeseries=dict()
+        data=dict()
+        dataerr=dict()
 
-            timeseries=dict()
-            data=dict()
-            dataerr=dict()
+        for f in np.unique(lc['filt']):
 
-            for f in np.unique(lc['filt']):
+            mask = (lc['filt']==f)
 
-                mask = (lc['filt']==f)
+            timeseries[f]=np.array(lc['jd'][mask]-mjd_adjustment)
+            data[f]=np.array(lc['adjflux'][mask])
+            dataerr[f]=np.array(lc['fluxerr'][mask])
+        
+        LC=LightCurve(timeseries, data , dataerr, id)
 
-                timeseries[f]=np.array(lc['jd'][mask]-mjd_adjustment)
-                data[f]=np.array(lc['adjflux'][mask])
-                dataerr[f]=np.array(lc['fluxerr'][mask])
-            
-            LC=LightCurve(timeseries, data , dataerr, id)
-
-            # Change lines below to make adjustments.
-            LC.find_flare(user=adjust_parameters, reset_params=reset_params, print_params=print_flare_parameters)                                    # user = True enables user to manually change T and alpha values               
-            if adjust_parameters and reset_params:
-                LC.find_flare(user=False)
-            LC.plot(show=show, save=save, plot_std = plot_std, save_loc=fig_path)    # See descriptions in lightcurve class plot() method
-            if save_pickle and pickle_path is not None:
-                LC.save_pickle(pickle_path=pickle_path)                                 # Remove pickle_path parameter to avoid saving pickle files
+        # Change lines below to make adjustments.
+        LC.find_flare(user=adjust_parameters, reset_params=reset_params, print_params=print_flare_parameters)                                    # user = True enables user to manually change T and alpha values               
+        if adjust_parameters and reset_params:
+            LC.find_flare(user=False)
+        LC.plot(show=show, save=save, plot_std = plot_std, save_loc=fig_path)    # See descriptions in lightcurve class plot() method
+        if save_pickle and pickle_path is not None:
+            LC.save_pickle(pickle_path=pickle_path)                                 # Remove pickle_path parameter to avoid saving pickle files
 
 def divide_files_into_batches(file_list, batch_size):
 
@@ -136,21 +113,23 @@ def divide_files_into_batches(file_list, batch_size):
         yield file_list[i:i + batch_size]
 
 def process_batch(batch):
+
     """Process a batch of files."""
     for id in tqdm(batch):
         # Replace this with actual file processing logic
         print(f"Processing {id}")
-        print(type(id))
+        # print(type(id))
         lc = light_curve(id)
-        process_light_curve(lc, adjust_parameters, reset_params, show, save, plot_std, fig_path, pickle_path)
+        process_light_curve(id, lc, adjust_parameters, reset_params, show, save, plot_std, fig_path, pickle_path)
 
 
 # Unique IDs of data
-ids = np.unique([f.split('\\')[-1].split('_')[0] for f in glob.glob(f'{lc_path}/*.dat')])[:100]
+ids = np.unique([f.split('\\')[-1].split('_')[0] for f in glob.glob(f'{lc_path}/*.dat')]).tolist()
 
 # file_list = [f"file_{i}.txt" for i in range(500000)]  # List of 500,000 file names
 # Adjust batch size based on your system's memory and processing capability
 batches = list(divide_files_into_batches(ids, batch_size))
+#print(batches)
 
 # Uncomment the following lines to process only specified files OR a random set of files
 # ids=['108602273971326964','108592173310873531','82973163747267487', '94300438321684163']
@@ -159,7 +138,7 @@ batches = list(divide_files_into_batches(ids, batch_size))
 def main():
 
     num_batches = len(batches)
-    num_workers = min(4, num_batches)  # Number of workers should be chosen based on your system
+    num_workers = min(2, num_batches)  # Number of workers should be chosen based on your system
 
     with ProcessPoolExecutor(max_workers=num_workers) as executor:
         futures = [executor.submit(process_batch, batch) for batch in batches]
@@ -176,6 +155,12 @@ if __name__=="__main__":
     t0=time.time()
     main()
     print(time.time()-t0)
+
+    # for id in tqdm(ids):
+    #     print(f"Processing {id}")
+    #     print(type(id))
+    #     lc = light_curve(id)
+    #     process_light_curve(id, lc, adjust_parameters, reset_params, show, save, plot_std, fig_path, pickle_path)
 
 
 

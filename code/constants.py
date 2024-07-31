@@ -12,10 +12,9 @@ mjd_zp = 58500
 """
 
 batch_size = 100
-
 lc_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\forced_lc'
-fig_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\samples'
-pickle_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\pickles'
+fig_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\samples_1'
+pickle_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\pickles_1'
 temp_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\forced_lc_by_id'
 temp_store=False
 

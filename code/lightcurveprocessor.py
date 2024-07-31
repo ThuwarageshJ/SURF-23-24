@@ -28,6 +28,8 @@ class LightCurve:
         # File ID
         self.id = str(id)
 
+        #print(type(self.id))
+
         # Parameters for exponential filters. 
         self.alpha = alpha
         self.T= T
