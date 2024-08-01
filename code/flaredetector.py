@@ -126,19 +126,17 @@ def process_batch(batch):
 # Unique IDs of data
 ids = np.unique([f.split('\\')[-1].split('_')[0] for f in glob.glob(f'{lc_path}/*.dat')]).tolist()
 
-# file_list = [f"file_{i}.txt" for i in range(500000)]  # List of 500,000 file names
-# Adjust batch size based on your system's memory and processing capability
-batches = list(divide_files_into_batches(ids, batch_size))
-#print(batches)
-
 # Uncomment the following lines to process only specified files OR a random set of files
 # ids=['108602273971326964','108592173310873531','82973163747267487', '94300438321684163']
 # random=np.random.randint(0, len(ids), size=100)
 
+# Divide into batches
+batches = list(divide_files_into_batches(ids, batch_size))
+
 def main():
 
     num_batches = len(batches)
-    num_workers = min(2, num_batches)  # Number of workers should be chosen based on your system
+    num_workers = min(cores, num_batches)  # Number of cores
 
     with ProcessPoolExecutor(max_workers=num_workers) as executor:
         futures = [executor.submit(process_batch, batch) for batch in batches]
@@ -152,15 +150,19 @@ def main():
 
 
 if __name__=="__main__":
-    t0=time.time()
-    main()
-    print(time.time()-t0)
 
-    # for id in tqdm(ids):
-    #     print(f"Processing {id}")
-    #     print(type(id))
-    #     lc = light_curve(id)
-    #     process_light_curve(id, lc, adjust_parameters, reset_params, show, save, plot_std, fig_path, pickle_path)
+    t0=time.time()
+
+    if use_multiprocessing:
+        main()
+    else:
+        for id in tqdm(ids):
+            print(f"Processing {id}")
+            lc = light_curve(id)
+            process_light_curve(id, lc, adjust_parameters, reset_params, show, save, plot_std, fig_path, pickle_path)
+    
+    print(time.time()-t0)
+    
 
 
 

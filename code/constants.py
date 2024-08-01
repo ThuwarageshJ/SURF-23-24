@@ -1,44 +1,47 @@
 import os, glob
 
-"""
-    Global constants: No need to change
-"""
-cur_folder_path=os.path.dirname(__file__)
-mjd_adjustment = 2400000.5
-mjd_zp = 58500
+cur_folder_path=os.path.dirname(__file__)   # current folder path
 
 """
     Folder paths and program mode variables
 """
+cores = 4                               # no. of cores for multi processing
+batch_size = 100                        # batch size for multi processing
+use_multiprocessing = True              # whether to use multi processing
 
-batch_size = 100
-lc_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\forced_lc'
-fig_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\samples_1'
-pickle_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\pickles_1'
-temp_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\forced_lc_by_id'
-temp_store=False
+lc_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\forced_lc'               # folder for light curve files
+fig_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\samples'                # folder to save plots
+pickle_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\pickles'             # folder to save processed light curves as pickle files     
+temp_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\forced_lc_by_id'       # ignore
 
-show= False
-save= True
-save_pickle = True
-adjust_parameters=False
-reset_params = True
-plot_std=False
-print_flare_parameters = False
+show= False                             # show plots in a window after processing 
+save= True                              # save plots after processing
+save_pickle = True                      # save pickles after processing
+
+adjust_parameters=False                 # if True, will be prompted to a command line UI to play around T and alpha values for the detector
+reset_params = True                     # if adjusting T and alpha, reset them to their default values after adjusting
+plot_std=False                          # plot 95% confidence interval from GP regression
+print_flare_parameters = False          # print flare physical parameters after processing light curve
+temp_store=False                        # ignore
 
 """
     Default parameters and datatypes for processing the light curves
 """
-alpha = .2
-T=9
-post_peak_g_r_days=5
-prediction_interval = 2
-N_low=20
+alpha = .2                              # a measure of lower bound for slope of the flare. Decrease to detect slowly rising flares
+T=9                                     # a measure of no. of days of continuous flux increase to be detected as a flare. Decreast to detect short flares.
+post_peak_g_r_days=5                    # no. of time data points after peak to calculate for g-r color
+prediction_interval = 2                 # time interval for the timeseries on to which GP fit is done
+N_low=20                                # no. of lowest data points used for zero point calculation. Ignore for now
+mjd_zp = 58500                          # mjd used for zero point calculation for each field
+
+"""
+    Global constants: No need to change
+"""
+mjd_adjustment = 2400000.5
 
 # Columns and corresponding datatypes for lightcurves.
 cols = 'jd,mag,magerr,filt,field,flux,fluxerr,adjflux'
 dtypes = 'int,float,float,str,int,float,float,float'
-
 
 # Run to test folder path validity
 if __name__=="__main__":
