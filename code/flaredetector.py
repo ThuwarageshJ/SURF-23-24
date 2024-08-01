@@ -98,7 +98,6 @@ def process_light_curve(id, lc, adjust_parameters, reset_params, show, save, plo
         
         LC=LightCurve(timeseries, data , dataerr, id)
 
-        # Change lines below to make adjustments.
         LC.find_flare(user=adjust_parameters, reset_params=reset_params, print_params=print_flare_parameters)                                    # user = True enables user to manually change T and alpha values               
         if adjust_parameters and reset_params:
             LC.find_flare(user=False)
@@ -116,9 +115,7 @@ def process_batch(batch):
 
     """Process a batch of files."""
     for id in tqdm(batch):
-        # Replace this with actual file processing logic
         print(f"Processing {id}")
-        # print(type(id))
         lc = light_curve(id)
         process_light_curve(id, lc, adjust_parameters, reset_params, show, save, plot_std, fig_path, pickle_path)
 

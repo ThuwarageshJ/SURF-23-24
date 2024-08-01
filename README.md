@@ -15,5 +15,3 @@ Code for SURF Project 2023-24
 - Lines 30-35 (Optional):
     - Customize parameters for flare detection and light curve processing
 - Run `constants'py` after mentioning the folderpaths to check the validity of the paths.
-
-
