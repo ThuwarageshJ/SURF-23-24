@@ -7,7 +7,7 @@ cur_folder_path=os.path.dirname(__file__)   # current folder path
 """
 cores = 4                               # no. of cores for multi processing
 batch_size = 100                        # batch size for multi processing
-use_multiprocessing = True              # whether to use multi processing
+use_multiprocessing = 0             # whether to use multi processing
 
 lc_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\forced_lc'               # folder for light curve files
 fig_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\samples'                # folder to save plots
@@ -20,7 +20,7 @@ save_pickle = True                      # save pickles after processing
 
 adjust_parameters=False                 # if True, will be prompted to a command line UI to play around T and alpha values for the detector
 reset_params = True                     # if adjusting T and alpha, reset them to their default values after adjusting
-plot_std=False                          # plot 95% confidence interval from GP regression
+plot_std= False                       # plot 95% confidence interval from GP regression
 print_flare_parameters = False          # print flare physical parameters after processing light curve
 temp_store=False                        # ignore
 
@@ -37,6 +37,10 @@ mjd_zp = 58500                          # mjd used for zero point calculation fo
 """
     Global constants: No need to change
 """
+
+pickle_paths=[os.path.join(pickle_path, 'positives'), os.path.join(pickle_path, 'negatives')]
+fig_paths=[os.path.join(fig_path, 'positives'), os.path.join(fig_path, 'negatives')]
+
 mjd_adjustment = 2400000.5
 
 # Columns and corresponding datatypes for lightcurves.

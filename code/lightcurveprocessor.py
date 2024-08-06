@@ -27,6 +27,7 @@ class LightCurve:
         
         # File ID
         self.id = str(id)
+        self.flares_present=False
 
         #print(type(self.id))
 
@@ -68,6 +69,8 @@ class LightCurve:
         # Flares detected in each filter. 
         self.flares_t=dict()        # timestamp of the flare interval
         self.flares_loc=dict()      # time_prediction indices of the flare interval
+
+        self.levels = dict()
 
         # Peaks for each flare in each filter
         self.peaks=dict()           # zg and zr flux values at peak
@@ -125,6 +128,7 @@ class LightCurve:
             self.g_r_color_change_rates[filter]=np.array([])
             self.g_r_color_at_peak_err[filter]=np.array([])
             self.g_r_color_change_rates_err[filter]=np.array([])
+            self.levels=np.array([])
 
             self.thiel_sen_parameters[filter]=None
             self.gp_parameters[filter]=None
@@ -141,15 +145,15 @@ class LightCurve:
         if self.null: 
             return
         
-        fig = plt.figure(figsize=(10/1.6*3,10/1.6))
-        ax = fig.subplots()
+        fig = plt.figure(figsize=(10/1.6*3,8/1.6))
+        ax1 = fig.subplots()
 
         for filter in self.filters:
 
             if plot_data:                   
 
                 # Plot data points with errorbars
-                ax.errorbar(self.timeseries[filter], 
+                ax1.errorbar(self.timeseries[filter], 
                             self.data[filter], 
                             self.dataerr[filter], 
                             fmt='o',  c=dict(zg="royalblue", zr="crimson")[filter], 
@@ -158,11 +162,12 @@ class LightCurve:
             if len(self.mean_prediction[filter])!=0:
 
                 # Plot GP fit mean
-                ax.plot(self.time_prediction[filter], self.mean_prediction[filter], label="Mean prediction "+filter)
+                ax1.plot(self.time_prediction[filter], self.mean_prediction[filter], label="Mean prediction "+filter)
                 
                 # Plot GP fit 95% confidence interval
                 if plot_std:
-                    ax.fill_between(
+
+                    ax1.fill_between(
                         self.time_prediction[filter],
                         self.mean_prediction[filter] - 1.96 * self.std_prediction[filter],
                         self.mean_prediction[filter] + 1.96 * self.std_prediction[filter],
@@ -172,7 +177,7 @@ class LightCurve:
             
             # Plot Thiel-Sen line
             if len(self.thiel_sen_prediction[filter])!=0 and plot_thiel_sen:
-                ax.plot(self.time_prediction[filter], self.thiel_sen_prediction[filter], label="Thiel Sen Line "+filter)
+                ax1.plot(self.time_prediction[filter], self.thiel_sen_prediction[filter], label="Thiel Sen Line "+filter)
             
             # Plot flare intervals as determined by the exponential filter
             for i in range(len(self.flares_t[filter])):
@@ -182,10 +187,10 @@ class LightCurve:
 
         # Plot information
         plt.legend()
-        # plt.grid()
+        #plt.grid()
         plt.xlabel('MJD')
         plt.ylabel('Flux [uJy]')
-        _=plt.title(f"{self.id} T: {self.T}, alpha: {self.alpha}")
+        _=plt.title(f"GP Regression")
 
         # Save plot in specified location
         if save and save_loc is not None:   
@@ -394,6 +399,7 @@ class LightCurve:
                         loc=(flare_temp[1], i)
                         flare_t.append(timing)
                         flare_loc.append(loc)
+                        self.flares_present=True
                 else:
                     if (level<-0.8 or i==len(self.mean_prediction[filter])-1) and flare_began:    # add increasing 
                         flare_began=False
@@ -401,6 +407,7 @@ class LightCurve:
                         loc=(flare_temp[1], i)
                         flare_t.append(timing)
                         flare_loc.append(loc)
+                        self.flares_present=True
 
             
             self.flares_t[filter]=flare_t

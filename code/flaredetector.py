@@ -15,6 +15,13 @@ from constants import *
 import pickle
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
+
+for i in range(2):
+    if not os.path.exists(pickle_paths[i]) and save_pickle:
+        os.makedirs(pickle_paths[i])
+    if not os.path.exists(fig_paths[i]) and save:
+        os.makedirs(fig_paths[i])
+
 def light_curve(id):
     
     lc = None
@@ -77,7 +84,7 @@ def light_curve(id):
 
     return lc
 
-def process_light_curve(id, lc, adjust_parameters, reset_params, show, save, plot_std, fig_path, pickle_path):
+def process_light_curve(id, lc, adjust_parameters, reset_params, show, save, plot_std, fig_paths, pickle_paths):
 
     if lc is None:
         return
@@ -101,9 +108,10 @@ def process_light_curve(id, lc, adjust_parameters, reset_params, show, save, plo
         LC.find_flare(user=adjust_parameters, reset_params=reset_params, print_params=print_flare_parameters)                                    # user = True enables user to manually change T and alpha values               
         if adjust_parameters and reset_params:
             LC.find_flare(user=False)
-        LC.plot(show=show, save=save, plot_std = plot_std, save_loc=fig_path)    # See descriptions in lightcurve class plot() method
+        i=0 if LC.flares_present else 1
+        LC.plot(show=show, save=save, plot_std = plot_std, save_loc=fig_paths[i])    # See descriptions in lightcurve class plot() method
         if save_pickle and pickle_path is not None:
-            LC.save_pickle(pickle_path=pickle_path)                                 # Remove pickle_path parameter to avoid saving pickle files
+            LC.save_pickle(pickle_path=pickle_paths[i])                                 # Remove pickle_path parameter to avoid saving pickle files
 
 def divide_files_into_batches(file_list, batch_size):
 
@@ -117,11 +125,11 @@ def process_batch(batch):
     for id in tqdm(batch):
         print(f"Processing {id}")
         lc = light_curve(id)
-        process_light_curve(id, lc, adjust_parameters, reset_params, show, save, plot_std, fig_path, pickle_path)
+        process_light_curve(id, lc, adjust_parameters, reset_params, show, save, plot_std, fig_paths, pickle_paths)
 
 
 # Unique IDs of data
-ids = np.unique([f.split('\\')[-1].split('_')[0] for f in glob.glob(f'{lc_path}/*.dat')]).tolist()
+ids = np.unique([f.split('\\')[-1].split('_')[0] for f in glob.glob(f'{lc_path}/*.dat')])[:].tolist()
 
 # Uncomment the following lines to process only specified files OR a random set of files
 # ids=['108602273971326964','108592173310873531','82973163747267487', '94300438321684163']
@@ -156,7 +164,7 @@ if __name__=="__main__":
         for id in tqdm(ids):
             print(f"Processing {id}")
             lc = light_curve(id)
-            process_light_curve(id, lc, adjust_parameters, reset_params, show, save, plot_std, fig_path, pickle_path)
+            process_light_curve(id, lc, adjust_parameters, reset_params, show, save, plot_std, fig_paths, pickle_paths)
     
     print(time.time()-t0)
     

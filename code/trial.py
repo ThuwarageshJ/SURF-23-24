@@ -63,5 +63,8 @@
 #     print(time.time()-t1)
 
 import os
-
-print(os.path.exists(r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\forced_lc_figs\100330391706647456.png'))
+from constants import *
+# print(os.path.exists(r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\forced_lc_figs\100330391706647456.png'))newpath = r'C:\Program Files\arbitrary' 
+positives=os.path.join(pickle_path, 'positives')
+if not os.path.exists(positives):
+    os.makedirs(positives)

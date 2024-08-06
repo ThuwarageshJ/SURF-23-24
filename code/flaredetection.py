@@ -17,9 +17,9 @@ cols = 'jd,mag,magerr,filt,field,flux,fluxerr,adjflux'
 dtypes = 'int,float,float,str,int,float,float,float'
 t0=time.time()
 # Unique IDs of data
-ids = np.unique([f.split('\\')[-1].split('_')[0] for f in glob.glob(f'{cur_folder_path}/forced_lc/*.dat')])[:100]
-#ids=['108602273971326964','108592173310873531','82973163747267487', '94300438321684163']
-
+#ids = np.unique([f.split('\\')[-1].split('_')[0] for f in glob.glob(f'{cur_folder_path}/forced_lc/*.dat')])[:100]
+ids=['108602273971326964','108592173310873531','82973163747267487', '94300438321684163']
+ids=[ '94300438321684163']
 # trials=np.random.randint(0, 100, size=100)
 
 for id in tqdm(ids):
@@ -124,7 +124,7 @@ for id in tqdm(ids):
             
             LC=LightCurve(timeseries, data , dataerr, id)
             LC.find_flare(user=False, print_params=print_flare_parameters)
-            LC.plot(show=0, save=1, plot_std = False, save_loc=f'{cur_folder_path}/samples')
+            LC.plot(show=1, save=0, plot_std = 1,plot_data=0, save_loc=f'{cur_folder_path}/samples')
             
 
             # print("\n Saving the lightcurve object as %s..." % id)
