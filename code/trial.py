@@ -62,9 +62,42 @@
 #         print(compute_square(i))
 #     print(time.time()-t1)
 
-import os
-from constants import *
-# print(os.path.exists(r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\forced_lc_figs\100330391706647456.png'))newpath = r'C:\Program Files\arbitrary' 
-positives=os.path.join(pickle_path, 'positives')
-if not os.path.exists(positives):
-    os.makedirs(positives)
+# import os
+# from constants import *
+# # print(os.path.exists(r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\forced_lc_figs\100330391706647456.png'))newpath = r'C:\Program Files\arbitrary' 
+# positives=os.path.join(pickle_path, 'positives')
+# if not os.path.exists(positives):
+#     os.makedirs(positives)
+
+import numpy as np
+from scipy.interpolate import interp1d
+import matplotlib.pyplot as plt
+import copy
+
+h={
+    'aha':np.array([4,5,5]),
+    'bha':np.array([6,7,7])
+}
+
+def ka(d: dict):
+    #m=copy.deepcopy(d)
+    for key in d.keys():
+        d[key]+=9
+    #return m
+print(h)
+ka(h)
+print(h)
+
+def hallo(**kwargs):
+    for key, value in kwargs.items():
+        print("%s == %s" % (key, value))
+
+def myFun(arg1, **kwargs):
+    hallo(kwargs=kwargs)
+    # for key, value in kwargs.items():
+    #     print("%s == %s" % (key, value))
+
+
+# Driver code
+myFun("Hi", first='Geeks', mid='for', last='Geeks')
+

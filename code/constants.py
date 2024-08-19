@@ -1,4 +1,5 @@
 import os, glob
+import numpy as np
 
 cur_folder_path=os.path.dirname(__file__)   # current folder path
 
@@ -20,7 +21,7 @@ save_pickle = True                      # save pickles after processing
 
 adjust_parameters=False                 # if True, will be prompted to a command line UI to play around T and alpha values for the detector
 reset_params = True                     # if adjusting T and alpha, reset them to their default values after adjusting
-plot_std= False                       # plot 95% confidence interval from GP regression
+plot_std= False                         # plot 95% confidence interval from GP regression
 print_flare_parameters = False          # print flare physical parameters after processing light curve
 temp_store=False                        # ignore
 
@@ -37,6 +38,18 @@ mjd_zp = 58500                          # mjd used for zero point calculation fo
 """
     Global constants: No need to change
 """
+h=6.626e-34
+c=3e8
+k=1.38e-23
+frequencies={
+    'zg':6.3e14,
+    'zr':4.3e14
+}
+ref='zg'
+
+def B(filt,T):
+    v=frequencies[filt]
+    return 2*h*v**3/(c**2*(np.exp(h*v/(k*T))-1))
 
 pickle_paths=[os.path.join(pickle_path, 'positives'), os.path.join(pickle_path, 'negatives')]
 fig_paths=[os.path.join(fig_path, 'positives'), os.path.join(fig_path, 'negatives')]

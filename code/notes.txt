@@ -135,3 +135,12 @@ Code cleanup
 Comment out
 Customize Flaredetector
 Multi processing
+
+------------------------------------------------------------
+
+input problem for simulations
+suggestion:
+- begin with raw files
+- make lc,  do zp corrections
+- simulate from lc
+- run it through the code

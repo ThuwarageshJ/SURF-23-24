@@ -497,5 +497,3 @@ class LightCurve:
                 print(' Peak fluxes: (ZG, ZR): ', self.peaks[filter], ' uJy')
                 print(' g-r colors at peak: ', self.g_r_color_at_peak[filter], ' mag')
                 print(' g-r color change rates for 5 days after peak: ', self.g_r_color_change_rates[filter], ' mag day-1')
-
-    
