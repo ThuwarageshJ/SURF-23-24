@@ -17,7 +17,18 @@ import pickle
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 def verify_light_curve_eligibility(lc):
-    return True
+
+    valid = True
+
+    for f in np.unique(lc['filt']):
+        mask = (lc['filt']==f)
+        stdev = np.std(lc['adjflux'][mask])
+        mean  = np.mean(lc['adjflux'][mask])
+        if np.max(lc['adjflux'][mask])>mean+5*stdev or np.min(lc['adjflux'][mask])<mean-5*stdev:
+            valid = False
+            break
+
+    return valid
 
 def simulate(lc):
     pass

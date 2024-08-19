@@ -144,3 +144,21 @@ suggestion:
 - make lc,  do zp corrections
 - simulate from lc
 - run it through the code
+
+Power law (t0)
+
+beginning time for secondary flare, plateau
+
+T0
+
+Randomizations:
+    t peak
+    peak flux ref 
+    T0?
+    t first light (for power law)
+    n, p (powerlaw)
+    t0 (power law)
+    t decay
+    t plateau
+    secondary flare variables (same)
+
