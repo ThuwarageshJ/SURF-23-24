@@ -11,7 +11,8 @@ from astropy.table import Table
 from astropy.io import ascii
 from tqdm import *
 from lightcurveprocessor import LightCurve
-from flaredetector import light_curve, divide_files_into_batches
+from flaredetector import light_curve, divide_files_into_batches, process_light_curve
+from model import model
 from constants import *
 import pickle
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -24,26 +25,71 @@ def verify_light_curve_eligibility(lc):
         mask = (lc['filt']==f)
         stdev = np.std(lc['adjflux'][mask])
         mean  = np.mean(lc['adjflux'][mask])
-        if np.max(lc['adjflux'][mask])>mean+5*stdev or np.min(lc['adjflux'][mask])<mean-5*stdev:
+        if np.max(lc['adjflux'][mask])>mean+5*stdev or np.min(lc['adjflux'][mask])<mean-5*stdev or np.max(lc['adjflux'][mask])>50 or np.min(lc['adjflux'][mask])<-50:
             valid = False
             break
 
     return valid
 
 def simulate(lc):
-    pass
 
+    timeseries=dict()
+    data=dict()
+    dataerr=dict()
+
+    t_start = np.inf
+    t_end = -np.inf
+
+    for f in np.unique(lc['filt']):
+
+        mask = (lc['filt']==f)
+
+        timeseries[f]=np.array(lc['jd'][mask]-mjd_adjustment)
+        data[f]=np.array(lc['adjflux'][mask])
+        dataerr[f]=np.array(lc['fluxerr'][mask])
+
+        t_start=min(t_start, timeseries[f][0])
+        t_end=max(t_end, timeseries[f][-1])
+ 
+    parameters = np.random.randint([0, peak_flux_ref_range[0], T0_range[0], time_range[0], time_range[0] ],
+                                    [t_end-t_start+1, peak_flux_ref_range[1], T0_range[1], time_range[1], time_range[1] ])
+
+    simulated_data = model(data, timeseries, 'r1', 'd1', 
+                            parameters[0], parameters[1], parameters[2], sigma_rise= parameters[3], t_decay = parameters[4])
+    
+    parameters=parameters.astype('float64')
+    
+    parameters[0]=float(parameters[0]/(t_end-t_start))
+
+    sim = Table(names=cols1.split(','), dtype=dtypes1.split(',')) 
+
+    for f in simulated_data.keys():
+        for (i, t) in enumerate(timeseries[f]):
+            sim.add_row([t+mjd_adjustment, f, dataerr[f][i], simulated_data[f][i]])
+    
+    return (sim, parameters)
+
+  
 def process_batch(batch):
 
     """Process a batch of files."""
+
+    simulations_info = Table(names=('id', 't_peak', 'peak_flux_ref', 'T0', 'sigma_rise', 't_decay', 'flares_present'), 
+                             dtype=('str','float','int','int','int', 'int', 'bool'))
+    
     for id in tqdm(batch):
         print(f"Processing {id}")
         lc = light_curve(id)
-        if verify_light_curve_eligibility(lc):
-            simulate(lc)
+        if verify_light_curve_eligibility(lc) and lc!=None and len(lc)>0:
+            sim, parameters =simulate(lc)
+            ascii.write(sim, f'{simulations_path}/data/{id}.dat', overwrite=True)
+            raw= process_light_curve(id, lc, adjust_parameters=False, reset_params=True, show = False, save = True, save_pickle=False, plot_std=False, fig_paths=sim_raw_fig_paths, pickle_paths=sim_pickle_paths)
+            flare= process_light_curve(id, sim, adjust_parameters=False, reset_params=True, show = False, save = True, save_pickle=True, plot_std=False, fig_paths=sim_fig_paths, pickle_paths=sim_pickle_paths)
+            simulations_info.add_row([id, parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], flare])
+            ascii.write(simulations_info, f'{simulations_path}/info.dat', overwrite=True)
 
 # Unique IDs of data
-ids = np.unique([f.split('\\')[-1].split('_')[0] for f in glob.glob(f'{lc_path}/*.dat')]).tolist()
+ids = np.unique([f.split('\\')[-1].split('_')[0] for f in glob.glob(f'{lc_path}/*.dat')]).tolist()[500:]
 
 # Divide into batches
 batches = list(divide_files_into_batches(ids, batch_size))

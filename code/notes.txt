@@ -162,3 +162,9 @@ Randomizations:
     t plateau
     secondary flare variables (same)
 
+
+How to vary (random or fixed uniformly distributed values?)
+How many simulations per sample?
+Choosing flat curves
+ZP correction + joining fields --> simulate --> Test
+Final report

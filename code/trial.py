@@ -70,34 +70,45 @@
 #     os.makedirs(positives)
 
 import numpy as np
-from scipy.interpolate import interp1d
-import matplotlib.pyplot as plt
-import copy
+# from scipy.interpolate import interp1d
+# import matplotlib.pyplot as plt
+# import copy
 
-h={
-    'aha':np.array([4,5,5]),
-    'bha':np.array([6,7,7])
-}
+# h={
+#     'aha':np.array([4,5,5]),
+#     'bha':np.array([6,7,7])
+# }
 
-def ka(d: dict):
-    #m=copy.deepcopy(d)
-    for key in d.keys():
-        d[key]+=9
-    #return m
-print(h)
-ka(h)
-print(h)
+# def ka(d: dict):
+#     #m=copy.deepcopy(d)
+#     for key in d.keys():
+#         d[key]+=9
+#     #return m
+# print(h)
+# ka(h)
+# print(h)
 
-def hallo(**kwargs):
-    for key, value in kwargs.items():
-        print("%s == %s" % (key, value))
+# def hallo(**kwargs):
+#     for key, value in kwargs.items():
+#         print("%s == %s" % (key, value))
 
-def myFun(arg1, **kwargs):
-    hallo(kwargs=kwargs)
-    # for key, value in kwargs.items():
-    #     print("%s == %s" % (key, value))
+# def myFun(arg1, **kwargs):
+#     hallo(kwargs=kwargs)
+#     # for key, value in kwargs.items():
+#     #     print("%s == %s" % (key, value))
 
 
-# Driver code
-myFun("Hi", first='Geeks', mid='for', last='Geeks')
+# # Driver code
+# myFun("Hi", first='Geeks', mid='for', last='Geeks')
 
+parameters=np.array([208.0, 0.0])
+t_start = 0
+t_end = 1867
+print(parameters[0], t_start-t_end)
+x=parameters[0]/(t_end-t_start)
+print(x)
+parameters[0]=x
+print(parameters[0])
+x=208
+y=1867
+print(x/y)

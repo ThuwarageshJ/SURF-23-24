@@ -14,10 +14,14 @@ lc_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\forced_lc'               
 fig_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\samples'                # folder to save plots
 pickle_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\pickles'             # folder to save processed light curves as pickle files     
 temp_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\forced_lc_by_id'       # ignore
+simulations_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations'
+simulations_raw_fig_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\raw'
+simulations_fig_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\fig'
+simulations_pickle_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\pickles'
 
 show= False                             # show plots in a window after processing 
 save= True                              # save plots after processing
-save_pickle = True                      # save pickles after processing
+save_pickle = False                     # save pickles after processing
 
 adjust_parameters=False                 # if True, will be prompted to a command line UI to play around T and alpha values for the detector
 reset_params = True                     # if adjusting T and alpha, reset them to their default values after adjusting
@@ -34,11 +38,14 @@ post_peak_g_r_days=5                    # no. of time data points after peak to 
 prediction_interval = 2                 # time interval for the timeseries on to which GP fit is done
 N_low=20                                # no. of lowest data points used for zero point calculation. Ignore for now
 mjd_zp = 58500                          # mjd used for zero point calculation for each field
-
+peak_flux_ref_range =[0, 201]
+T0_range = [1e3, 1e7+1]
+time_range = [2, 366]
 """
     Global constants: No need to change
 """
 h=6.626e-34
+
 c=3e8
 k=1.38e-23
 frequencies={
@@ -49,16 +56,23 @@ ref='zg'
 
 def B(filt,T):
     v=frequencies[filt]
-    return 2*h*v**3/(c**2*(np.exp(h*v/(k*T))-1))
+    pow=h*v/(k*T)
+    return 2*h*v**3/(c**2*(np.exp(pow)-1))
 
 pickle_paths=[os.path.join(pickle_path, 'positives'), os.path.join(pickle_path, 'negatives')]
 fig_paths=[os.path.join(fig_path, 'positives'), os.path.join(fig_path, 'negatives')]
+sim_pickle_paths=[os.path.join(simulations_pickle_path, 'positives'), os.path.join(simulations_pickle_path, 'negatives')]
+sim_fig_paths=[os.path.join(simulations_fig_path, 'positives'), os.path.join(simulations_fig_path, 'negatives')]
+sim_raw_fig_paths=[os.path.join(simulations_raw_fig_path, 'positives'), os.path.join(simulations_raw_fig_path, 'negatives')]
 
 mjd_adjustment = 2400000.5
 
 # Columns and corresponding datatypes for lightcurves.
 cols = 'jd,mag,magerr,filt,field,flux,fluxerr,adjflux'
 dtypes = 'int,float,float,str,int,float,float,float'
+
+cols1 = 'jd,filt,fluxerr,adjflux'
+dtypes1 = 'int,str,float,float'
 
 # Run to test folder path validity
 if __name__=="__main__":

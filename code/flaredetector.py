@@ -84,7 +84,7 @@ def light_curve(id):
 
     return lc
 
-def process_light_curve(id, lc, adjust_parameters, reset_params, show, save, plot_std, fig_paths, pickle_paths):
+def process_light_curve(id, lc, adjust_parameters, reset_params, show, save, save_pickle, plot_std, fig_paths, pickle_paths):
 
     if lc is None:
         return
@@ -112,7 +112,8 @@ def process_light_curve(id, lc, adjust_parameters, reset_params, show, save, plo
         LC.plot(show=show, save=save, plot_std = plot_std, save_loc=fig_paths[i])    # See descriptions in lightcurve class plot() method
         if save_pickle and pickle_path is not None:
             LC.save_pickle(pickle_path=pickle_paths[i])                                 # Remove pickle_path parameter to avoid saving pickle files
-
+        return not i
+    
 def divide_files_into_batches(file_list, batch_size):
 
     """Divide the file list into batches of a given size."""
@@ -125,7 +126,7 @@ def process_batch(batch):
     for id in tqdm(batch):
         print(f"Processing {id}")
         lc = light_curve(id)
-        process_light_curve(id, lc, adjust_parameters, reset_params, show, save, plot_std, fig_paths, pickle_paths)
+        flare= process_light_curve(id, lc, adjust_parameters, reset_params, show, save, save_pickle, plot_std, fig_paths, pickle_paths)
 
 
 # Unique IDs of data
@@ -164,7 +165,7 @@ if __name__=="__main__":
         for id in tqdm(ids):
             print(f"Processing {id}")
             lc = light_curve(id)
-            process_light_curve(id, lc, adjust_parameters, reset_params, show, save, plot_std, fig_paths, pickle_paths)
+            flare= process_light_curve(id, lc, adjust_parameters, reset_params, show, save, save_pickle, plot_std, fig_paths, pickle_paths)
     
     print(time.time()-t0)
     

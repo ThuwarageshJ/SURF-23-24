@@ -41,21 +41,21 @@ def model(data: dict , timeseries: dict, rise: str, decline :str, t_peak: float,
     simulated_data = copy.deepcopy(data)
 
     if rise=='r1':
-
+        
         t_start=dict()
         for filter in simulated_data.keys():
             t_start[filter]=timeseries[filter][0]
 
         simulated_data = gaussian_rise(simulated_data, timeseries, t_start, t_peak, peak_flux_ref, T0, 
                                        kwargs['sigma_rise'])
-    elif rise=='r2':
+    # elif rise=='r2':
 
-        t_start=dict()
-        for filter in simulated_data.keys():
-            t_start[filter]=timeseries[filter][0]
+    #     t_start=dict()
+    #     for filter in simulated_data.keys():
+    #         t_start[filter]=timeseries[filter][0]
 
-        simulated_data = power_law_rise(simulated_data, timeseries, t_start, t_peak, peak_flux_ref, T0,
-                                        kwargs['t_fl'], kwargs['n'])
+    #     simulated_data = power_law_rise(simulated_data, timeseries, t_start, t_peak, peak_flux_ref, T0,
+    #                                     kwargs['t_fl'], kwargs['n'])
     else:
         print("Invalid rise model.")
         return
@@ -65,28 +65,30 @@ def model(data: dict , timeseries: dict, rise: str, decline :str, t_peak: float,
         simulated_data = exponential_decline(simulated_data, timeseries, t_start, t_peak, peak_flux_ref, T0,
                                              kwargs['t_decay'])
         
-    elif decline=='d2':
+    # elif decline=='d2':
          
-        power_law_decline()
+    #     power_law_decline()
 
-    elif decline=='d3':
+    # elif decline=='d3':
         
-        simulated_data = exponential_decline(simulated_data, timeseries, t_start, t_peak, peak_flux_ref, T0,
-                                             kwargs['t_decay'], kwargs['t_plateau'])
+    #     simulated_data = exponential_decline(simulated_data, timeseries, t_start, t_peak, peak_flux_ref, T0,
+    #                                          kwargs['t_decay'], kwargs['t_plateau'])
         
-    elif decline=='d4':
-        pass
-    elif decline=='d5':
+    # elif decline=='d4':
+    #     pass
+    # elif decline=='d5':
         
-        simulated_data = exponential_decline(simulated_data, timeseries, t_start, t_peak, peak_flux_ref, T0,
-                                             kwargs['t_decay'])
-        simulated_data = gaussian_rise(simulated_data, timeseries, 
-                                       kwargs['t_start_secondary'], kwargs['t_peak_secondary'], kwargs['peak_flux_ref_secondary'], kwargs['T0_secondary'], kwargs['sigma_rise_secondary'])
-        simulated_data = exponential_decline(simulated_data, timeseries, 
-                                             kwargs['t_start_secondary'], kwargs['t_peak_secondary'], kwargs['peak_flux_ref_secondary'], kwargs['T0_secondary'], kwargs['t_decay_secondary'])
+    #     simulated_data = exponential_decline(simulated_data, timeseries, t_start, t_peak, peak_flux_ref, T0,
+    #                                          kwargs['t_decay'])
+    #     simulated_data = gaussian_rise(simulated_data, timeseries, 
+    #                                    kwargs['t_start_secondary'], kwargs['t_peak_secondary'], kwargs['peak_flux_ref_secondary'], kwargs['T0_secondary'], kwargs['sigma_rise_secondary'])
+    #     simulated_data = exponential_decline(simulated_data, timeseries, 
+    #                                          kwargs['t_start_secondary'], kwargs['t_peak_secondary'], kwargs['peak_flux_ref_secondary'], kwargs['T0_secondary'], kwargs['t_decay_secondary'])
 
-    elif decline=='d6':
-        pass
+    # elif decline=='d6':
+    #     pass
     else:
         print("Invalid decline model.")
         return 
+    
+    return simulated_data
