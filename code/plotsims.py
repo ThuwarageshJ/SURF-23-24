@@ -1,48 +1,70 @@
-# import matplotlib.pyplot as plt
-# from astropy.table import Table
-
-# tab = Table.read(r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\info.dat', format='ascii')
-
-# mask = (tab['flares_present'] == 'True')
-
-# x=tab['t_decay'][mask]
-
-# y=tab['peak_flux_ref'][mask]
-
-# plt.hist2d(x,y)
-
-# plt.show()
-
 import numpy as np
 import matplotlib.pyplot as plt
 from astropy.table import Table
+import re
 
-# Load the table
-tab = Table.read(r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\info.dat', format='ascii')
+# Define file paths
+file_paths = [
+    r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\info.dat'
+    # r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_20_2.dat',
+    # r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_50_2.dat'
+]
 
-# Convert relevant columns to numpy arrays
-t_decay = np.array(tab['t_decay'])
-peak_flux_ref = np.array(tab['peak_flux_ref'])
-flares_present = np.array(tab['flares_present'])
 
-# Define the number of bins for the histogram
-bins = 50  # Adjust as needed
+# Number of files
+num_files = len(file_paths)
 
-# 2D histogram for all IDs
-hist_total, xedges, yedges = np.histogram2d(t_decay, peak_flux_ref, bins=bins)
+# Determine the number of rows needed for the subplots
+rows = num_files
+cols = 2  # Two columns: one for total number of IDs, one for fraction
 
-# 2D histogram for IDs with flares_present == True
-mask = (flares_present == 'True')
-hist_flares, _, _ = np.histogram2d(t_decay[mask], peak_flux_ref[mask], bins=[xedges, yedges])
+# Create a figure with a dynamic number of subplots based on the number of files
+fig, ax = plt.subplots(rows, cols, figsize=(12, 6 * rows), sharex=True, sharey=True)
 
-# Calculate the fraction
-fraction = np.divide(hist_flares, hist_total, out=np.zeros_like(hist_flares, dtype=float), where=hist_total != 0)
+# Handle the case where there's only one file (and thus, one row of subplots)
+if num_files == 1:
+    ax = np.array([ax])  # Convert to a 2D array for consistent indexing
 
-# Plotting the fraction as a heatmap
-plt.figure(figsize=(10, 8))
-plt.imshow(fraction.T, origin='lower', extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]], aspect='auto', cmap='viridis')
-plt.colorbar(label='Fraction of flares_present == True')
-plt.xlabel('t_decay')
-plt.ylabel('Peak Flux in reference band')
-plt.title('Fraction of Flares Present (True) in 2D Histogram')
+bins = 50  # Number of bins for histograms
+
+for idx, file_path in enumerate(file_paths):
+    # Load the table
+    tab = Table.read(file_path, format='ascii')
+    
+    # Extract T and alpha from filename using regex
+    match = re.search(r'r1\+d1_(\d+)_(\d+).dat', file_path)
+    if match:
+        T = match.group(1)
+        alpha = int(match.group(2)) / 10  # Divide Y by 10 to get alpha
+    else:
+        T = 'Unknown'
+        alpha = 'Unknown'
+
+    # Convert relevant columns to numpy arrays
+    t_decay = np.array(tab['t_decay'])
+    peak_flux_ref = np.array(tab['peak_flux_ref'])
+    flares_present = np.array(tab['flares_present'])
+
+    # Calculate 2D histograms
+    hist_total, xedges, yedges = np.histogram2d(t_decay, peak_flux_ref, bins=bins)
+    mask = (flares_present == 'True')
+    hist_flares, _, _ = np.histogram2d(t_decay[mask], peak_flux_ref[mask], bins=[xedges, yedges])
+    fraction = np.divide(hist_flares, hist_total, out=np.zeros_like(hist_flares, dtype=float), where=hist_total != 0)
+
+    # Plot the total number of IDs
+    im1 = ax[idx, 0].imshow(hist_total.T, origin='lower', extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]], aspect='auto', cmap='viridis')
+    ax[idx, 0].set_title(f'Number of IDs (T={T}, α={alpha})')
+    ax[idx, 0].set_xlabel('t_decay')
+    ax[idx, 0].set_ylabel('peak_flux_ref')
+    fig.colorbar(im1, ax=ax[idx, 0], label='Number of IDs')
+
+    # Plot the fraction of flares present
+    im2 = ax[idx, 1].imshow(fraction.T, origin='lower', extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]], aspect='auto', cmap='viridis')
+    ax[idx, 1].set_title(f'Fraction of Flares Present (True) (T={T}, α={alpha})')
+    ax[idx, 1].set_xlabel('t_decay')
+    fig.colorbar(im2, ax=ax[idx, 1], label='Fraction of flares_present == True')
+
+# Add a global title and adjust layout
+plt.suptitle('2D Histograms of t_decay vs. peak_flux_ref for Different Files', fontsize=16)
+plt.tight_layout(rect=[0, 0, 1, 0.95])
 plt.show()

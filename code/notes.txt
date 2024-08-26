@@ -165,6 +165,7 @@ Randomizations:
 
 How to vary (random or fixed uniformly distributed values?)
 How many simulations per sample?
-Choosing flat curves
+Choosing flat curves - chi squared test
 ZP correction + joining fields --> simulate --> Test
 Final report
+

@@ -33,7 +33,7 @@ temp_store=False                        # ignore
     Default parameters and datatypes for processing the light curves
 """
 alpha = .2                              # a measure of lower bound for slope of the flare. Decrease to detect slowly rising flares
-T=9                                     # a measure of no. of days of continuous flux increase to be detected as a flare. Decreast to detect short flares.
+T=9                                   # a measure of no. of days of continuous flux increase to be detected as a flare. Decreast to detect short flares.
 post_peak_g_r_days=5                    # no. of time data points after peak to calculate for g-r color
 prediction_interval = 2                 # time interval for the timeseries on to which GP fit is done
 N_low=20                                # no. of lowest data points used for zero point calculation. Ignore for now
@@ -41,6 +41,10 @@ mjd_zp = 58500                          # mjd used for zero point calculation fo
 peak_flux_ref_range =[0, 201]
 T0_range = [1e3, 1e7+1]
 time_range = [2, 366]
+n_sims_per_sample = 4
+T0_avg = 21000
+sigma_rise_avg = 20
+
 """
     Global constants: No need to change
 """

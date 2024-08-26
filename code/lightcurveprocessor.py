@@ -138,6 +138,10 @@ class LightCurve:
             self.regress()
 
         # self.find_thiel_sen()
+    
+    def reset_params(self):
+        self.T=T
+        self.alpha=alpha
 
     # Customizable method to plot and save light curves, GP mean, GP standard deviation, detected flares, Thiel-Sen line
     def plot(self, save_loc: str = None, plot_thiel_sen: bool =False, plot_std: bool = False, plot_data: bool = True, show: bool =False, save: bool = False)-> None:
@@ -336,6 +340,8 @@ class LightCurve:
         if self.null:
             return
         
+        self.flares_present=False
+
         if user:
 
             original_T = self.T
@@ -433,7 +439,7 @@ class LightCurve:
             for loc in self.flares_loc[filter]:
 
                 peak_idx = np.argmax(self.mean_prediction[filter][loc[0]:loc[1]+1])+loc[0]
-
+                
                 peak_flux=(self.mean_prediction['zg'][peak_idx], self.mean_prediction['zr'][peak_idx])
                 peak_flux_err=(self.std_prediction['zg'][peak_idx], self.std_prediction['zr'][peak_idx])
                 g_r=-2.5*np.log10(peak_flux[0]/peak_flux[1])

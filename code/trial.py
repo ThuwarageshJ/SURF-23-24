@@ -100,15 +100,9 @@ import numpy as np
 
 # # Driver code
 # myFun("Hi", first='Geeks', mid='for', last='Geeks')
-
-parameters=np.array([208.0, 0.0])
-t_start = 0
-t_end = 1867
-print(parameters[0], t_start-t_end)
-x=parameters[0]/(t_end-t_start)
-print(x)
-parameters[0]=x
-print(parameters[0])
-x=208
-y=1867
-print(x/y)
+sum=0
+for i in range(33):
+    t=float(input())
+    sum+=t
+print('sum=',sum)
+print(sum/33)
