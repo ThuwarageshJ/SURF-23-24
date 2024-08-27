@@ -100,9 +100,5 @@ import numpy as np
 
 # # Driver code
 # myFun("Hi", first='Geeks', mid='for', last='Geeks')
-sum=0
-for i in range(33):
-    t=float(input())
-    sum+=t
-print('sum=',sum)
-print(sum/33)
+h=np.random.randint(5.5, 6.5)
+print(h)

@@ -86,23 +86,28 @@ def process_batch(paths):
 
     simulations_info = Table(names=('id', 't_peak', 'peak_flux_ref', 'T0', 'sigma_rise', 't_decay', 'flares_present'), 
                              dtype=('str','float','int','int','int', 'int', 'bool'))
-    param_info=Table.read(f'{simulations_path}/info_perm.dat', format='ascii')
+    param_info=Table.read(f'{simulations_path}/r1+d1_9_2_con1.dat', format='ascii')
 
     for path in paths:
-        ids = np.unique([f for f in glob.glob(f'{path}/*.pickle')]).tolist()
-        for id in tqdm(ids):
-            print(f"Processing {id.split('\\')[-1].split('.')[0]}")
-            LC=LightCurve.get_pickle(id)
+        fs = np.unique([f for f in glob.glob(f'{path}/*.pickle')]).tolist()
+        for f in tqdm(fs):
+            id=f.split('\\')[-1].split('.')[0]
+            if id.split('_')[-1] not in ['4','5','6','7']:
+                continue
+            LC=LightCurve.get_pickle(f)
+            if len(LC.filters)!=2:
+                continue
+            print(f"Processing {id}")
             LC.reset_params()
             LC.flares_present=False
             LC.find_flare()
             #lc = Table.read(f'{simulations_path}/data/{id}.dat', format='ascii')
             # raw= process_light_curve(id, lc, adjust_parameters=False, reset_params=True, show = False, save = True, save_pickle=False, plot_std=False, fig_paths=sim_raw_fig_paths, pickle_paths=sim_pickle_paths)
             #flare= process_light_curve(f'{id}', lc, adjust_parameters=False, reset_params=True, show = False, save = False, save_pickle=False, plot_std=False, fig_paths=sim_fig_paths, pickle_paths=sim_pickle_paths)
-            mask=(param_info['id']==id.split('\\')[-1].split('.')[0])
+            mask=(param_info['id']==id)
             parameters=param_info[mask]
             if len(parameters)>0:
-                simulations_info.add_row([f'{id.split('\\')[-1].split('.')[0]}', parameters[0][1], parameters[0][2], parameters[0][3], parameters[0][4], parameters[0][5], LC.flares_present])
+                simulations_info.add_row([f'{id}', parameters[0][1], parameters[0][2], parameters[0][3], parameters[0][4], parameters[0][5], LC.flares_present])
                 ascii.write(simulations_info, f'{simulations_path}/info.dat', overwrite=True)
 
 # Unique IDs of data

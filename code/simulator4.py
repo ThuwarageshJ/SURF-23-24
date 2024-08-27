@@ -51,8 +51,8 @@ def simulate(lc):
         t_start=min(t_start, timeseries[f][0])
         t_end=max(t_end, timeseries[f][-1])
  
-    parameters = np.random.randint([0, peak_flux_ref_range[0], T0_avg, sigma_rise_avg, time_range[0]],
-                                    [t_end-t_start+1, peak_flux_ref_range[1], T0_avg+1, sigma_rise_avg+1, time_range[1]],
+    parameters = np.random.randint([(t_end-t_start)/2, peak_flux_ref_range[0], T0_avg, sigma_rise_avg, time_range[0]],
+                                    [(t_end-t_start)/2+1, peak_flux_ref_range[1], T0_avg+1, sigma_rise_avg+1, time_range[1]],
                                     size=(n_sims_per_sample,5) )
     
     sims=[]
@@ -96,13 +96,13 @@ def process_batch(batch):
         sims =simulate(lc)
         raw= process_light_curve(id, lc, adjust_parameters=False, reset_params=True, show = False, save = False, save_pickle=False, plot_std=False, fig_paths=sim_raw_fig_paths, pickle_paths=sim_pickle_paths)
         for (i, (sim, parameters)) in enumerate(sims):
-            ascii.write(sim, f'{simulations_path}/data/{id}_{i+4}.dat', overwrite=True)
-            flare= process_light_curve(f'{id}_{i}', sim, adjust_parameters=False, reset_params=True, show = False, save = False, save_pickle=False, plot_std=False, fig_paths=sim_fig_paths, pickle_paths=sim_pickle_paths)
-            simulations_info.add_row([f'{id}_{i+4}', parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], flare])
+            ascii.write(sim, f'{simulations_path}/data/{id}_{i+8}.dat', overwrite=True)
+            flare= process_light_curve(f'{id}_{i+8}', sim, adjust_parameters=False, reset_params=True, show = False, save = True, save_pickle=True, plot_std=False, fig_paths=sim_fig_paths, pickle_paths=sim_pickle_paths)
+            simulations_info.add_row([f'{id}_{i+8}', parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], flare])
             ascii.write(simulations_info, f'{simulations_path}/info.dat', overwrite=True)
 
 # Unique IDs of data
-ids = np.unique([f.split('\\')[-1].split('_')[0] for f in glob.glob(f'{simulations_path}/data/*.dat')]).tolist()
+ids = np.unique([f.split('\\')[-1].split('_')[0] for f in glob.glob(f'{simulations_path}/data/*.dat')]).tolist()[122:]
 
 # Divide into batches
 batches = list(divide_files_into_batches(ids, batch_size))

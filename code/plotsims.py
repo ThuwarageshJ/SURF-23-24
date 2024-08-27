@@ -5,7 +5,19 @@ import re
 
 # Define file paths
 file_paths = [
-    r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\info.dat'
+    # r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\info.dat'
+    
+    # T0, Sigma Rise constant. Varying t_peak, peak flux and t_decay. (Files 4-7)
+     r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_9_2_con1.dat',
+     r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_9_4_con1.dat',
+     r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_20_2_con1.dat',
+     r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_50_2_con1.dat',
+
+    # T0, Sigma Rise, T_peak constant. Varying peak flux and t_decay. (Files 8-11)
+    #  r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_9_2_con2.dat'
+
+    # All Randoms with different filters (Files 0-3)
+    # r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_9_2.dat',
     # r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_20_2.dat',
     # r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_50_2.dat'
 ]
@@ -25,7 +37,7 @@ fig, ax = plt.subplots(rows, cols, figsize=(12, 6 * rows), sharex=True, sharey=T
 if num_files == 1:
     ax = np.array([ax])  # Convert to a 2D array for consistent indexing
 
-bins = 50  # Number of bins for histograms
+bins = 30  # Number of bins for histograms
 
 for idx, file_path in enumerate(file_paths):
     # Load the table

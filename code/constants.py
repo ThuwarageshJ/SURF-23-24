@@ -32,7 +32,7 @@ temp_store=False                        # ignore
 """
     Default parameters and datatypes for processing the light curves
 """
-alpha = .2                              # a measure of lower bound for slope of the flare. Decrease to detect slowly rising flares
+alpha = .4                              # a measure of lower bound for slope of the flare. Decrease to detect slowly rising flares
 T=9                                   # a measure of no. of days of continuous flux increase to be detected as a flare. Decreast to detect short flares.
 post_peak_g_r_days=5                    # no. of time data points after peak to calculate for g-r color
 prediction_interval = 2                 # time interval for the timeseries on to which GP fit is done
