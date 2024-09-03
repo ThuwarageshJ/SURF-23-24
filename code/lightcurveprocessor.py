@@ -440,22 +440,34 @@ class LightCurve:
 
                 peak_idx = np.argmax(self.mean_prediction[filter][loc[0]:loc[1]+1])+loc[0]
                 
-                peak_flux=(self.mean_prediction['zg'][peak_idx], self.mean_prediction['zr'][peak_idx])
-                peak_flux_err=(self.std_prediction['zg'][peak_idx], self.std_prediction['zr'][peak_idx])
-                g_r=-2.5*np.log10(peak_flux[0]/peak_flux[1])
-                g_r_err=2.5*np.sqrt((peak_flux_err[0]/peak_flux[0])**2+(peak_flux_err[1]/peak_flux[1])**2)/np.log(10)
+                try:
+                    peak_flux=(self.mean_prediction['zg'][peak_idx], self.mean_prediction['zr'][peak_idx])
+                    peak_flux_err=(self.std_prediction['zg'][peak_idx], self.std_prediction['zr'][peak_idx])
+                    g_r=-2.5*np.log10(peak_flux[0]/peak_flux[1])
+                    g_r_err=2.5*np.sqrt((peak_flux_err[0]/peak_flux[0])**2+(peak_flux_err[1]/peak_flux[1])**2)/np.log(10)
+                except:
+                    peak_flux=self.mean_prediction[filter][peak_idx]
+                    peak_flux_err=self.std_prediction[filter][peak_idx]
+                    g_r=np.nan
+                    g_r_err=np.nan
 
                 g_r_changes=[]
                 g_r_changes_err=[]
 
-                for i in range(peak_idx+1, min(peak_idx+self.g_r_days+1, len(self.time_prediction[filter]))):
-                    val=(-2.5*(np.log10(self.mean_prediction['zg'][i]*self.mean_prediction['zr'][i-1]/(self.mean_prediction['zr'][i]*self.mean_prediction['zg'][i-1]))))/(self.time_prediction[filter][i]-self.time_prediction[filter][i-1])
-                    frac=self.mean_prediction['zg'][i]*self.mean_prediction['zr'][i-1]/(self.mean_prediction['zr'][i]*self.mean_prediction['zg'][i-1])
-                    frac_err=0
-                    for j in range(i-1,i+1):
-                        frac_err+=self.std_prediction['zg'][j]**2/self.mean_prediction['zg'][j]**2+self.std_prediction['zr'][j]**2/self.mean_prediction['zr'][j]**2
-                    g_r_changes.append(val)
-                    g_r_changes_err.append(abs(val)*np.sqrt((frac_err/(np.log(10)*np.log10(frac)))**2))
+                try:
+                    for i in range(peak_idx+1, min(peak_idx+self.g_r_days+1, len(self.time_prediction[filter]))):
+
+                        val=(-2.5*(np.log10(self.mean_prediction['zg'][i]*self.mean_prediction['zr'][i-1]/(self.mean_prediction['zr'][i]*self.mean_prediction['zg'][i-1]))))/(self.time_prediction[filter][i]-self.time_prediction[filter][i-1])
+                        frac=self.mean_prediction['zg'][i]*self.mean_prediction['zr'][i-1]/(self.mean_prediction['zr'][i]*self.mean_prediction['zg'][i-1])
+                        frac_err=0
+                        for j in range(i-1,i+1):
+                            frac_err+=self.std_prediction['zg'][j]**2/self.mean_prediction['zg'][j]**2+self.std_prediction['zr'][j]**2/self.mean_prediction['zr'][j]**2
+                        g_r_changes.append(val)
+                        g_r_changes_err.append(abs(val)*np.sqrt((frac_err/(np.log(10)*np.log10(frac)))**2))
+                except:
+                    for i in range(peak_idx+1, min(peak_idx+self.g_r_days+1, len(self.time_prediction[filter]))):
+                        g_r_changes.append(np.nan)
+                        g_r_changes_err.append(np.nan)
 
                 peaks_loc.append(peak_idx)
                 g_r_color_changes.append(tuple(g_r_changes))

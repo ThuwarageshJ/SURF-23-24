@@ -169,3 +169,10 @@ Choosing flat curves - chi squared test
 ZP correction + joining fields --> simulate --> Test
 Final report
 
+1. shd t_peak be varied. 
+2. Problems with t_peak = 0.5
+3. Need to change flux max to 100
+4. Luminosity to flux (recall)
+5. Multiprocessing
+6. T, alpha variations
+7. Final report

@@ -8,13 +8,13 @@ file_paths = [
     # r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\info.dat'
     
     # T0, Sigma Rise constant. Varying t_peak, peak flux and t_decay. (Files 4-7)
-     r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_9_2_con1.dat',
-     r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_9_4_con1.dat',
-     r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_20_2_con1.dat',
-     r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_50_2_con1.dat',
+    r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_9_2_con1.dat',
+    # r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_9_4_con1.dat',
+    #  r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_20_2_con1.dat',
+    #  r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_50_2_con1.dat',
 
     # T0, Sigma Rise, T_peak constant. Varying peak flux and t_decay. (Files 8-11)
-    #  r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_9_2_con2.dat'
+     r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_9_2_con2.dat'
 
     # All Randoms with different filters (Files 0-3)
     # r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_9_2.dat',
@@ -44,7 +44,7 @@ for idx, file_path in enumerate(file_paths):
     tab = Table.read(file_path, format='ascii')
     
     # Extract T and alpha from filename using regex
-    match = re.search(r'r1\+d1_(\d+)_(\d+).dat', file_path)
+    match = re.search(r'r1\+d1_(\d+)_(\d+)(?:_con\d+)?\.dat', file_path)
     if match:
         T = match.group(1)
         alpha = int(match.group(2)) / 10  # Divide Y by 10 to get alpha
@@ -77,6 +77,6 @@ for idx, file_path in enumerate(file_paths):
     fig.colorbar(im2, ax=ax[idx, 1], label='Fraction of flares_present == True')
 
 # Add a global title and adjust layout
-plt.suptitle('2D Histograms of t_decay vs. peak_flux_ref for Different Files', fontsize=16)
+plt.suptitle('t_decay vs. peak_flux_ref', fontsize=16)
 plt.tight_layout(rect=[0, 0, 1, 0.95])
 plt.show()
