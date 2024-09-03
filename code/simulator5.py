@@ -102,6 +102,7 @@ def process_batch(batch):
         print(f"Processing {id}")
         lc = light_curve(id)
         if len(np.unique(lc['filt']))!=2 or len(lc)==0 or lc is None:
+            print("Invalid file.. skipping..")
             continue
         #if verify_light_curve_eligibility(lc) and lc!=None and len(lc)>0:
         lc = normalize(lc)
@@ -138,14 +139,21 @@ if __name__=="__main__":
 
     t0=time.time()
 
-    if use_multiprocessing:
-        main()
-    else:
-        process_batch(ids)
+    try:
+        if use_multiprocessing:
+            main()
+        else:
+            process_batch(ids)
+    
+    except BaseException as ex:
+        print("Ending due to exception: %s" % repr(ex))
+
+    info = Table.read(f'{simulations_path}/info.dat', format='ascii') 
+
+    with open(f'{simulations_path}/info_perm.dat', mode='a') as f:
+        f.seek(0, os.SEEK_END)  
+        info.write(f, format='ascii.no_header')
     
     print(time.time()-t0)
-    
 
 
-
-    

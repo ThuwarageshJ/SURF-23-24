@@ -5,16 +5,16 @@ import re
 
 # Define file paths
 file_paths = [
-    # r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\info.dat'
+    r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\info_perm.dat'
     
     # T0, Sigma Rise constant. Varying t_peak, peak flux and t_decay. (Files 4-7)
-    r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_9_2_con1.dat',
+    # r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_9_2_con1.dat',
     # r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_9_4_con1.dat',
     #  r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_20_2_con1.dat',
     #  r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_50_2_con1.dat',
 
     # T0, Sigma Rise, T_peak constant. Varying peak flux and t_decay. (Files 8-11)
-     r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_9_2_con2.dat'
+    # r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_9_2_con2.dat'
 
     # All Randoms with different filters (Files 0-3)
     # r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_9_2.dat',

@@ -2,6 +2,7 @@ import os, glob
 import numpy as np
 
 cur_folder_path=os.path.dirname(__file__)   # current folder path
+print(cur_folder_path)
 
 """
     Folder paths and program mode variables
@@ -14,10 +15,10 @@ lc_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\forced_lc'               
 fig_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\samples'                # folder to save plots
 pickle_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\pickles'             # folder to save processed light curves as pickle files     
 temp_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\forced_lc_by_id'       # ignore
-simulations_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations'
-simulations_raw_fig_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\raw'
-simulations_fig_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\fig'
-simulations_pickle_path = r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\pickles'
+simulations_path = os.path.join(cur_folder_path, 'simulations') 
+simulations_raw_fig_path = os.path.join(simulations_path, 'raw') 
+simulations_fig_path =  os.path.join(simulations_path, 'fig')  
+simulations_pickle_path =  os.path.join(simulations_path, 'pickles') 
 
 show= False                             # show plots in a window after processing 
 save= True                              # save plots after processing
@@ -38,10 +39,14 @@ post_peak_g_r_days=5                    # no. of time data points after peak to 
 prediction_interval = 2                 # time interval for the timeseries on to which GP fit is done
 N_low=20                                # no. of lowest data points used for zero point calculation. Ignore for now
 mjd_zp = 58500                          # mjd used for zero point calculation for each field
+
+"""
+    Simulation parameters
+"""
 peak_flux_ref_range =[0, 151]
 T0_range = [1e3, 1e7+1]
 time_range = [2, 366]
-n_sims_per_sample = 5
+n_sims_per_sample = 5                   # no. of simulations to be created from a flat light curve file
 T0_avg = 21000
 sigma_rise_avg = 20
 
