@@ -115,7 +115,7 @@ def process_batch(batch):
             ascii.write(simulations_info, f'{simulations_path}/info.dat', overwrite=True)
 
 # Unique IDs of data
-ids = np.unique([f.split('\\')[-1].split('_')[0] for f in glob.glob(f'{lc_path}/*.dat')]).tolist()[2:]
+ids = np.unique([f.split('\\')[-1].split('_')[0] for f in glob.glob(f'{lc_path}/*.dat')]).tolist()[2556:]
 
 # Divide into batches
 batches = list(divide_files_into_batches(ids, batch_size))

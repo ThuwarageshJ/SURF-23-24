@@ -5,7 +5,7 @@ import re
 
 # Define file paths
 file_paths = [
-    r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\info_perm.dat'
+    r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\1.dat'
     
     # T0, Sigma Rise constant. Varying t_peak, peak flux and t_decay. (Files 4-7)
     # r'C:\Users\thuwa\Coding\SURF\SURF-23-24\code\simulations\r1+d1_9_2_con1.dat',
@@ -37,7 +37,7 @@ fig, ax = plt.subplots(rows, cols, figsize=(12, 6 * rows), sharex=True, sharey=T
 if num_files == 1:
     ax = np.array([ax])  # Convert to a 2D array for consistent indexing
 
-bins = 30  # Number of bins for histograms
+bins = 10  # Number of bins for histograms
 
 for idx, file_path in enumerate(file_paths):
     # Load the table
@@ -51,11 +51,13 @@ for idx, file_path in enumerate(file_paths):
     else:
         T = 'Unknown'
         alpha = 'Unknown'
+    
+    filtered_tab = tab
 
     # Convert relevant columns to numpy arrays
-    t_decay = np.array(tab['t_decay'])
-    peak_flux_ref = np.array(tab['peak_flux_ref'])
-    flares_present = np.array(tab['flares_present'])
+    t_decay = np.array(filtered_tab['t_decay'])
+    peak_flux_ref = np.array(filtered_tab['peak_flux_ref'])
+    flares_present = np.array(filtered_tab['flares_present'])
 
     # Calculate 2D histograms
     hist_total, xedges, yedges = np.histogram2d(t_decay, peak_flux_ref, bins=bins)
@@ -65,18 +67,18 @@ for idx, file_path in enumerate(file_paths):
 
     # Plot the total number of IDs
     im1 = ax[idx, 0].imshow(hist_total.T, origin='lower', extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]], aspect='auto', cmap='viridis')
-    ax[idx, 0].set_title(f'Number of IDs (T={T}, α={alpha})')
-    ax[idx, 0].set_xlabel('t_decay')
-    ax[idx, 0].set_ylabel('peak_flux_ref')
-    fig.colorbar(im1, ax=ax[idx, 0], label='Number of IDs')
+    ax[idx, 0].set_title(f'Number of simulations')
+    ax[idx, 0].set_xlabel('peak flare epoch')
+    ax[idx, 0].set_ylabel('peak flux in reference band (uJy)')
+    fig.colorbar(im1, ax=ax[idx, 0], label='Number of simulations')
 
     # Plot the fraction of flares present
     im2 = ax[idx, 1].imshow(fraction.T, origin='lower', extent=[xedges[0], xedges[-1], yedges[0], yedges[-1]], aspect='auto', cmap='viridis')
-    ax[idx, 1].set_title(f'Fraction of Flares Present (True) (T={T}, α={alpha})')
-    ax[idx, 1].set_xlabel('t_decay')
-    fig.colorbar(im2, ax=ax[idx, 1], label='Fraction of flares_present == True')
+    ax[idx, 1].set_title(f'Fraction of simulations with flares detected')
+    ax[idx, 1].set_xlabel('peak flare epoch')
+    fig.colorbar(im2, ax=ax[idx, 1], label='Fraction of simulations with flares detected')
 
 # Add a global title and adjust layout
-plt.suptitle('t_decay vs. peak_flux_ref', fontsize=16)
+#plt.suptitle('t_decay vs. peak_flux_ref', fontsize=16)
 plt.tight_layout(rect=[0, 0, 1, 0.95])
 plt.show()

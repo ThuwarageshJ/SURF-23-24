@@ -20,8 +20,8 @@ simulations_raw_fig_path = os.path.join(simulations_path, 'raw')
 simulations_fig_path =  os.path.join(simulations_path, 'fig')  
 simulations_pickle_path =  os.path.join(simulations_path, 'pickles') 
 
-show= False                             # show plots in a window after processing 
-save= True                              # save plots after processing
+show= True                            # show plots in a window after processing 
+save= False                            # save plots after processing
 save_pickle = False                     # save pickles after processing
 
 adjust_parameters=False                 # if True, will be prompted to a command line UI to play around T and alpha values for the detector
@@ -43,7 +43,7 @@ mjd_zp = 58500                          # mjd used for zero point calculation fo
 """
     Simulation parameters
 """
-peak_flux_ref_range =[0, 151]
+peak_flux_ref_range =[0, 101]
 T0_range = [1e3, 1e7+1]
 time_range = [2, 366]
 n_sims_per_sample = 5                   # no. of simulations to be created from a flat light curve file

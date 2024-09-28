@@ -149,7 +149,8 @@ class LightCurve:
         if self.null: 
             return
         
-        fig = plt.figure(figsize=(10/1.6*3,8/1.6))
+        #fig = plt.figure(figsize=(10/1.6*3,8/1.6))
+        fig = plt.figure(figsize=(10,4))
         ax1 = fig.subplots()
 
         for filter in self.filters:
@@ -177,7 +178,10 @@ class LightCurve:
                         self.mean_prediction[filter] + 1.96 * self.std_prediction[filter],
                         alpha=0.5,
                         label=r"95% confidence interval "+filter,
-                    )       
+                    )   
+                #     _=plt.title(f"GP Regression")
+                # else:
+                #     _=plt.title(f"Raw Data")    
             
             # Plot Thiel-Sen line
             if len(self.thiel_sen_prediction[filter])!=0 and plot_thiel_sen:
